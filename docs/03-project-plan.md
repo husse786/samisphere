@@ -177,11 +177,21 @@ backend server, the teacher is in control, progress step by step.
   and reads it back. (This test code is removed afterward.)
 
 ### ✅ Phase 2 Checklist
-- [ ] Firebase project created, Blaze plan active, Firestore enabled
-- [ ] `config/firebase.js` exists and is the only Firebase init in the app
-- [ ] Keys are in `.env`, excluded by `.gitignore` (verified not on GitHub)
-- [ ] A test write + read to Firestore succeeded
-- [ ] Test code removed; committed and pushed
+- [x] Firebase project created, Blaze plan active, Firestore enabled
+- [x] `config/firebase.js` exists and is the only Firebase init in the app
+- [x] Keys are in `.env`, excluded by `.gitignore` (verified not on GitHub)
+- [x] A test write + read to Firestore succeeded
+- [x] Test code removed; committed and pushed
+
+> **Phase 2 completed 2026-06-22.** Firebase project `samisphere-82309` (Blaze,
+> Firestore enabled). `firebase` SDK installed; `src/lib/config/firebase.js` is
+> the single init point, exporting `app` and `db`. Keys live in git-ignored
+> `frontend/.env` (SvelteKit `PUBLIC_` vars via `$env/static/public`); a
+> committed `frontend/.env.example` documents the shape. A temporary Node script
+> wrote + read + deleted a `_connection_test/ping` doc successfully, then was
+> removed. Firestore is currently in open/test mode — to be locked down in
+> Phase 10. Firebase Hosting site id (for Phase 11): `samisphere-82309-b0773`
+> (URL `samisphere-82309-b0773.web.app`).
 
 ---
 
