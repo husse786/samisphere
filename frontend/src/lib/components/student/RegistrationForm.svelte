@@ -4,6 +4,7 @@
 	import { _ } from 'svelte-i18n';
 	import { createRegistration } from '$lib/services/registrations.js';
 	import CourseDropdown from './CourseDropdown.svelte';
+	import Button from '$lib/components/common/Button.svelte';
 
 	// Optional callback so a parent can react to a successful save.
 	let { onsaved = () => {} } = $props();
@@ -37,21 +38,52 @@
 	}
 </script>
 
-<form onsubmit={handleSubmit}>
+<form onsubmit={handleSubmit} class="reg-form">
 	<label>
 		{$_('form.name')}
 		<input bind:value={name} placeholder={$_('form.namePlaceholder')} />
 	</label>
 	<CourseDropdown bind:selected={selectedCourse} />
-	<button type="submit" disabled={status === 'saving'}>
+	<Button type="submit" disabled={status === 'saving'}>
 		{status === 'saving' ? $_('form.saving') : $_('form.register')}
-	</button>
+	</Button>
 </form>
 
 {#if status === 'saved'}
-	<p>{$_('form.saved')}</p>
+	<p class="msg success">{$_('form.saved')}</p>
 {:else if status === 'incomplete'}
-	<p>{$_('form.incomplete')}</p>
+	<p class="msg">{$_('form.incomplete')}</p>
 {:else if status === 'error'}
-	<p>{$_('form.error')}</p>
+	<p class="msg error">{$_('form.error')}</p>
 {/if}
+
+<style>
+	.reg-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		align-items: stretch;
+		max-width: 360px;
+		background: var(--color-surface);
+		padding: var(--space-6);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
+	}
+	.reg-form :global(label),
+	.reg-form :global(input),
+	.reg-form :global(select),
+	.reg-form :global(.btn) {
+		width: 100%;
+	}
+	.msg {
+		margin-top: var(--space-4);
+		font-weight: 600;
+	}
+	.msg.success {
+		color: var(--color-accent);
+	}
+	.msg.error {
+		color: var(--color-danger);
+	}
+</style>

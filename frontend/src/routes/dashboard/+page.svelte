@@ -10,6 +10,7 @@
 	import LoginForm from '$lib/components/teacher/LoginForm.svelte';
 	import RegistrationList from '$lib/components/teacher/RegistrationList.svelte';
 	import CourseManager from '$lib/components/teacher/CourseManager.svelte';
+	import Button from '$lib/components/common/Button.svelte';
 
 	// undefined = still checking auth; null = logged out; User = logged in.
 	let user = $state(
@@ -20,19 +21,34 @@
 	onMount(() => onAuthChange((u) => (user = u)));
 </script>
 
-<h1>SamiSphere — {$_('dashboard.title')}</h1>
+<h1>{$_('dashboard.title')}</h1>
 
 {#if user === undefined}
 	<p>{$_('common.loading')}</p>
 {:else if user === null}
 	<LoginForm />
 {:else}
-	<p>
-		{$_('dashboard.signedInAs', { values: { email: user.email } })}
-		<button onclick={signOutTeacher}>{$_('dashboard.logout')}</button>
-	</p>
+	<div class="signed-in">
+		<span>{$_('dashboard.signedInAs', { values: { email: user.email } })}</span>
+		<Button variant="secondary" onclick={signOutTeacher}>{$_('dashboard.logout')}</Button>
+	</div>
 	<CourseManager />
 	<RegistrationList />
 {/if}
 
-<p><a href="/">{$_('nav.toStudent')}</a></p>
+<p class="nav"><a href="/">{$_('nav.toStudent')}</a></p>
+
+<style>
+	.signed-in {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-3);
+		margin-bottom: var(--space-6);
+		color: var(--color-text-muted);
+	}
+	.nav {
+		margin-top: var(--space-8);
+	}
+</style>

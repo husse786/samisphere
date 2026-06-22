@@ -25,24 +25,35 @@
 <style>
 	.language-switcher {
 		display: inline-flex;
-		gap: 0.25rem;
+		gap: var(--space-1);
 	}
 	.lang {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.35rem;
-		padding: 0.3rem 0.6rem;
+		gap: var(--space-2);
+		padding: var(--space-1) var(--space-3);
 		border: 2px solid transparent;
-		border-radius: 6px;
+		border-radius: var(--radius);
 		background: none;
+		color: var(--color-text-muted);
 		cursor: pointer;
 		font: inherit;
 	}
+	.lang:hover {
+		background: var(--color-bg);
+	}
 	.lang.active {
-		border-color: currentColor;
+		border-color: var(--color-primary);
+		color: var(--color-primary);
 		font-weight: 700;
 	}
 	.flag {
 		font-size: 1.1rem;
+	}
+	/* On small screens, show flags only to keep the switcher compact + visible. */
+	@media (max-width: 480px) {
+		.label {
+			display: none;
+		}
 	}
 </style>

@@ -3,6 +3,7 @@
 <script>
 	import { _ } from 'svelte-i18n';
 	import { signIn } from '$lib/services/auth.js';
+	import Button from '$lib/components/common/Button.svelte';
 
 	let email = $state('');
 	let password = $state('');
@@ -25,7 +26,7 @@
 	}
 </script>
 
-<form onsubmit={handleSubmit}>
+<form onsubmit={handleSubmit} class="login-form">
 	<h2>{$_('login.title')}</h2>
 	<label>
 		{$_('login.email')}
@@ -35,10 +36,37 @@
 		{$_('login.password')}
 		<input type="password" bind:value={password} autocomplete="current-password" />
 	</label>
-	<button type="submit" disabled={busy}>
+	<Button type="submit" disabled={busy}>
 		{busy ? $_('login.submitting') : $_('login.submit')}
-	</button>
+	</Button>
 	{#if error}
-		<p>{$_('login.error')}</p>
+		<p class="error">{$_('login.error')}</p>
 	{/if}
 </form>
+
+<style>
+	.login-form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		max-width: 360px;
+		background: var(--color-surface);
+		padding: var(--space-6);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
+	}
+	.login-form h2 {
+		margin: 0;
+	}
+	.login-form :global(label),
+	.login-form input,
+	.login-form :global(.btn) {
+		width: 100%;
+	}
+	.error {
+		margin: 0;
+		color: var(--color-danger);
+		font-weight: 600;
+	}
+</style>

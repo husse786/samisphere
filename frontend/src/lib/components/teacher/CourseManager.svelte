@@ -9,6 +9,7 @@
 		updateCourse,
 		setCourseStatus
 	} from '$lib/services/courses.js';
+	import Button from '$lib/components/common/Button.svelte';
 
 	let courses = $state(
 		/** @type {Array<{ id: string, course: string, time: string, status: string, capacity?: number }>} */ ([])
@@ -70,10 +71,10 @@
 
 <h2>{$_('courses.title')}</h2>
 
-<form onsubmit={handleAdd}>
+<form onsubmit={handleAdd} class="add-form">
 	<input bind:value={newCourse} placeholder={$_('courses.coursePlaceholder')} />
 	<input bind:value={newTime} placeholder={$_('courses.timePlaceholder')} />
-	<button type="submit">{$_('courses.add')}</button>
+	<Button type="submit">{$_('courses.add')}</Button>
 </form>
 
 {#if loading}
@@ -97,19 +98,23 @@
 						<td><input bind:value={editCourse} /></td>
 						<td><input bind:value={editTime} /></td>
 						<td>{c.status === 'available' ? $_('courses.statusAvailable') : $_('courses.statusHidden')}</td>
-						<td>
-							<button onclick={() => saveEdit(c.id)}>{$_('courses.save')}</button>
-							<button onclick={cancelEdit}>{$_('courses.cancel')}</button>
+						<td class="actions">
+							<Button onclick={() => saveEdit(c.id)}>{$_('courses.save')}</Button>
+							<Button variant="secondary" onclick={cancelEdit}>{$_('courses.cancel')}</Button>
 						</td>
 					{:else}
 						<td>{c.course}</td>
 						<td>{c.time}</td>
-						<td>{c.status === 'available' ? $_('courses.statusAvailable') : $_('courses.statusHidden')}</td>
 						<td>
-							<button onclick={() => toggle(c)}>
+							<span class="badge" class:hidden={c.status !== 'available'}>
+								{c.status === 'available' ? $_('courses.statusAvailable') : $_('courses.statusHidden')}
+							</span>
+						</td>
+						<td class="actions">
+							<Button variant="secondary" onclick={() => toggle(c)}>
 								{c.status === 'available' ? $_('courses.hide') : $_('courses.show')}
-							</button>
-							<button onclick={() => startEdit(c)}>{$_('courses.edit')}</button>
+							</Button>
+							<Button variant="secondary" onclick={() => startEdit(c)}>{$_('courses.edit')}</Button>
 						</td>
 					{/if}
 				</tr>
@@ -117,3 +122,32 @@
 		</tbody>
 	</table>
 {/if}
+
+<style>
+	.add-form {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		margin-bottom: var(--space-4);
+	}
+	.add-form input {
+		flex: 1 1 12rem;
+	}
+	.actions {
+		display: flex;
+		gap: var(--space-2);
+	}
+	.badge {
+		display: inline-block;
+		padding: 0.1rem var(--space-2);
+		border-radius: 999px;
+		font-size: 0.85rem;
+		font-weight: 600;
+		background: #d1fae5;
+		color: #047857;
+	}
+	.badge.hidden {
+		background: #e5e7eb;
+		color: var(--color-text-muted);
+	}
+</style>

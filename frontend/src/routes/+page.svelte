@@ -7,9 +7,19 @@
 	import RegistrationForm from '$lib/components/student/RegistrationForm.svelte';
 </script>
 
-<h1>SamiSphere</h1>
-<p>{$_('student.subtitle')}</p>
+<p class="subtitle">{$_('student.subtitle')}</p>
 
 <RegistrationForm />
 
-<p><a href="/dashboard">{$_('nav.toDashboard')}</a></p>
+<p class="nav"><a href="/dashboard">{$_('nav.toDashboard')}</a></p>
+
+<style>
+	.subtitle {
+		font-size: 1.1rem;
+		color: var(--color-text-muted);
+		margin-top: 0;
+	}
+	.nav {
+		margin-top: var(--space-8);
+	}
+</style>

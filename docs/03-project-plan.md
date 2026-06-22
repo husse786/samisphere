@@ -512,12 +512,24 @@ across the site.
   narrow phone screen and a desktop; the language switcher stays visible on both.
 
 ### ✅ Phase 8 Checklist
-- [ ] `theme.css` holds all colors/fonts/spacing and is imported app-wide
-- [ ] Components use theme tokens, not hard-coded colors
-- [ ] SamiSphere wordmark header appears on every page
-- [ ] Buttons/forms use the shared component + theme
-- [ ] Site is usable on phone and desktop; switcher visible on both
-- [ ] Committed and pushed
+- [x] `theme.css` holds all colors/fonts/spacing and is imported app-wide
+- [x] Components use theme tokens, not hard-coded colors
+- [x] SamiSphere wordmark header appears on every page
+- [x] Buttons/forms use the shared component + theme
+- [x] Site is usable on phone and desktop; switcher visible on both
+- [x] Committed and pushed
+
+> **Phase 8 completed 2026-06-23.** `styles/theme.css` defines tokens (indigo
+> primary, teal accent, light surfaces, spacing/radius/shadow) + base element
+> styling, imported once in the root layout. `components/common/Header.svelte`
+> shows the two-tone "Sami"(indigo)+"Sphere"(teal) wordmark beside the language
+> switcher on every page. Shared `components/common/Button.svelte` (primary /
+> secondary / danger) used across the forms and dashboard; forms are card-styled
+> via tokens. Switcher collapses to flags-only under 480px. Verified live on
+> desktop and mobile (375px), EN/LTR and FA/RTL: header, student form, and
+> dashboard login all render cleanly and stay usable; switcher visible on both.
+> `npm run check` clean. (Logged-in dashboard tables/badges use the same themed
+> primitives but weren't screenshotted, being behind the login.)
 
 ---
 
