@@ -1,0 +1,8 @@
+node_modules/
+# Real Telegram credentials — never commit (template is .env.example)
+.env
+.env.*
+!.env.example
+# Firebase build/debug artifacts
+.firebase/
+firebase-debug.log

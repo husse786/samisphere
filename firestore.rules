@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ⚠️ TEMPORARY open rules — matches the current Firestore test mode.
+    //    Replaced with the real, locked-down rules in Phase 10 (doc 01 §7).
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

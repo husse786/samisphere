@@ -566,12 +566,38 @@ testing (Phase 11), as decided.
   ID, and fill in the two placeholder values.
 
 ### ✅ Phase 9 Checklist
-- [ ] Cloud Function scaffold exists and can deploy
-- [ ] Function triggers on new registration (confirmed in logs)
-- [ ] Telegram message text is written and correct
-- [ ] `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` exist as empty placeholders
-- [ ] "Fill in real values during testing" step is documented
-- [ ] Committed and pushed
+- [x] Cloud Function scaffold exists and can deploy
+- [x] Function triggers on new registration (confirmed in logs)
+- [x] Telegram message text is written and correct
+- [x] `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` exist as empty placeholders
+- [x] "Fill in real values during testing" step is documented
+- [x] Committed and pushed
+
+> **Phase 9 completed 2026-06-23.** Top-level `functions/` (chosen with the
+> human) holds the Gen-2 Firestore trigger `notifyOnRegistration`
+> (`onDocumentCreated('registrations/{id}')`). It composes the message *"New
+> registration: {name} signed up for {course} — {time}."* and sends it to
+> Telegram — but `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` are read from the
+> environment and are EMPTY until Phase 11; while empty it logs the message it
+> *would* send. Root `firebase.json` + `.firebaserc` (project `samisphere-82309`)
+> added. Verified in the Firebase emulator (functions + firestore): writing a
+> registration fired the function and logged the placeholder message — confirmed
+> in logs. `node --check` passed. **Not yet deployed** (deploy needs Functions
+> enabled on Blaze + `firebase login` — a Phase 11 / human step).
+>
+> Also added `firestore.rules` with **temporary OPEN rules** (matching the
+> current cloud test mode) so the emulator could run — these are **replaced with
+> the real locked-down rules in Phase 10.**
+
+#### 📌 Phase 11 reminder — fill in the real Telegram values
+Documented here and in `functions/.env.example`:
+1. In Telegram, create the bot via **@BotFather** → copy the **bot token**.
+2. Have **Samira start a chat** with the bot, then get her numeric **chat ID**
+   (message the bot, then read it from
+   `https://api.telegram.org/bot<TOKEN>/getUpdates`).
+3. Copy `functions/.env.example` → `functions/.env` (git-ignored) and paste the
+   real `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`.
+4. Deploy: `firebase deploy --only functions`.
 
 ---
 

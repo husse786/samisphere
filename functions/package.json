@@ -1,0 +1,12 @@
+{
+	"name": "functions",
+	"description": "SamiSphere Cloud Functions — Telegram notification on new registration",
+	"main": "index.js",
+	"engines": {
+		"node": "22"
+	},
+	"dependencies": {
+		"firebase-functions": "^6.1.0"
+	},
+	"private": true
+}
