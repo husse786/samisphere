@@ -8,6 +8,7 @@
 	import { onAuthChange, signOutTeacher } from '$lib/services/auth.js';
 	import LoginForm from '$lib/components/teacher/LoginForm.svelte';
 	import RegistrationList from '$lib/components/teacher/RegistrationList.svelte';
+	import CourseManager from '$lib/components/teacher/CourseManager.svelte';
 
 	// undefined = still checking auth; null = logged out; User = logged in.
 	let user = $state(
@@ -29,6 +30,7 @@
 		Signed in as {user.email}
 		<button onclick={signOutTeacher}>Log out</button>
 	</p>
+	<CourseManager />
 	<RegistrationList />
 {/if}
 

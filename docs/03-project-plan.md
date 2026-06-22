@@ -392,13 +392,25 @@ core of "the teacher is in control." This replaces the hand-seeded test data.
   it removes it — verified live.
 
 ### ✅ Phase 6 Checklist
-- [ ] `services/courses.js` can add, edit, and hide courses
-- [ ] Teacher can add a course + time slot from the dashboard
-- [ ] On/off toggle flips `status` correctly
-- [ ] Hidden slots vanish from the student dropdown immediately
-- [ ] Re-enabling a slot brings it back
-- [ ] Hand-seeded test data cleaned up
-- [ ] Committed and pushed
+- [x] `services/courses.js` can add, edit, and hide courses
+- [x] Teacher can add a course + time slot from the dashboard
+- [x] On/off toggle flips `status` correctly
+- [x] Hidden slots vanish from the student dropdown immediately
+- [x] Re-enabling a slot brings it back
+- [x] Hand-seeded test data cleaned up
+- [x] Committed and pushed
+
+> **Phase 6 completed 2026-06-23.** `services/courses.js` extended with
+> `getAllCourses()` (dashboard sees hidden too), `addCourse()` (starts
+> available), `updateCourse()` (edit), and `setCourseStatus()` (hide/show).
+> `components/teacher/CourseManager.svelte` adds the add-form, the all-courses
+> table, an on/off toggle, and inline edit; mounted on `/dashboard` above the
+> registration list. Service semantics verified programmatically (add → visible
+> to students; hide → drops from student view but stays in dashboard list);
+> Phase 4 seeded data deleted (courses collection emptied for the teacher).
+> Human confirmed the full dashboard UI loop live: add → appears in student
+> dropdown → hide → vanishes → show → returns. `npm run check` clean. (Teacher
+> may now hold real courses added during testing — left as-is.)
 
 ---
 
