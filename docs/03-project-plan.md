@@ -226,11 +226,21 @@ Firestore, and it can be seen. No styling, no languages, no dropdown yet.
   list is fine — this is a temporary confirmation, refined later in the dashboard).
 
 ### ✅ Phase 3 Checklist
-- [ ] `services/registrations.js` can create and read registrations
-- [ ] The form on `/` saves a new registration to Firestore
-- [ ] Saved registrations are visible on screen
-- [ ] The whole loop (type → save → see) works with no errors
-- [ ] Committed and pushed
+- [x] `services/registrations.js` can create and read registrations
+- [x] The form on `/` saves a new registration to Firestore
+- [x] Saved registrations are visible on screen
+- [x] The whole loop (type → save → see) works with no errors
+- [x] Committed and pushed
+
+> **Phase 3 completed 2026-06-22.** `services/registrations.js` exposes
+> `createRegistration()` (auto-stamps `date` + a `createdAt` for ordering) and
+> `getRegistrations()` (newest first). `components/student/RegistrationForm.svelte`
+> (name + submit) calls the service; the student page `/` shows the form plus a
+> TEMPORARY registrations list (to be removed in Phase 5, Task 5.5). Verified
+> live in a browser: typing "Anna" → "Registration saved." → list showed
+> "Anna — 2026-06-22". `npm run check` clean (0 errors). One test record
+> ("Anna") remains in Firestore — harmless demo data, visible later in the
+> dashboard.
 
 ---
 

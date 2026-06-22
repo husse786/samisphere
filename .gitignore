@@ -26,3 +26,6 @@ npm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Local Claude Code tooling (machine-specific settings, preview launch config)
+.claude/
