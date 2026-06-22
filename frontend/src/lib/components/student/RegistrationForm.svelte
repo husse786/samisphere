@@ -4,8 +4,8 @@
 	import { createRegistration } from '$lib/services/registrations.js';
 	import CourseDropdown from './CourseDropdown.svelte';
 
-	// Parent passes a callback so the temporary list can refresh after a save.
-	let { onsaved } = $props();
+	// Optional callback so a parent can react to a successful save.
+	let { onsaved = () => {} } = $props();
 
 	let name = $state('');
 	let selectedCourse = $state(

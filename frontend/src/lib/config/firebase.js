@@ -3,6 +3,7 @@
 // Keys come from the git-ignored `.env` via SvelteKit's public env module.
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 import {
 	PUBLIC_FIREBASE_API_KEY,
 	PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -21,6 +22,8 @@ const firebaseConfig = {
 	appId: PUBLIC_FIREBASE_APP_ID
 };
 
-// One app instance, one Firestore handle, shared across the whole site.
+// One app instance, shared across the whole site: Firestore for data,
+// Auth for the teacher login.
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const auth = getAuth(app);

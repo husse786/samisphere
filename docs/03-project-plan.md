@@ -340,12 +340,23 @@ courses is the next phase.)
 - **Done when:** The temporary list from Task 3.4 is gone from the public page.
 
 ### ✅ Phase 5 Checklist
-- [ ] Email/password auth enabled; Samira's account created
-- [ ] `/dashboard` shows a login form when logged out
-- [ ] Logged-out visitors cannot see dashboard content
-- [ ] Logged-in teacher sees a clean list of all registrations
-- [ ] Temporary public registration list removed
-- [ ] Committed and pushed
+- [x] Email/password auth enabled; Samira's account created
+- [x] `/dashboard` shows a login form when logged out
+- [x] Logged-out visitors cannot see dashboard content
+- [x] Logged-in teacher sees a clean list of all registrations
+- [x] Temporary public registration list removed
+- [x] Committed and pushed
+
+> **Phase 5 completed 2026-06-22.** Firebase email/password auth enabled by the
+> human; teacher account `samira@samisphere.com` created. `config/firebase.js`
+> now also exports `auth`. `services/auth.js` wraps sign-in / sign-out /
+> `onAuthChange`. `/dashboard` gates on auth state: undefined → "Loading…",
+> null → `LoginForm`, user → `RegistrationList` + log-out. Temporary public
+> list removed from `/` (Task 5.5); `RegistrationForm`'s `onsaved` is now
+> optional. Verified live: logged-out shows only login (no data); wrong
+> credentials show an error; the human confirmed successful login shows the
+> registrations table. Note: route gating is UX only — real read protection
+> arrives with the Firestore rules in Phase 10. `npm run check` clean.
 
 ---
 
