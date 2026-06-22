@@ -130,12 +130,19 @@ backend server, the teacher is in control, progress step by step.
   shows a placeholder dashboard page.
 
 ### ✅ Phase 1 Checklist
-- [ ] SvelteKit app exists in `frontend/`
-- [ ] Dev server runs with no errors
-- [ ] `/` opens a placeholder student page
-- [ ] `/dashboard` opens a placeholder dashboard page
-- [ ] `src/lib/` subfolders exist per doc 02
-- [ ] Committed and pushed
+- [x] SvelteKit app exists in `frontend/`
+- [x] Dev server runs with no errors
+- [x] `/` opens a placeholder student page
+- [x] `/dashboard` opens a placeholder dashboard page
+- [x] `src/lib/` subfolders exist per doc 02
+- [x] Committed and pushed
+
+> **Phase 1 completed 2026-06-22.** SvelteKit (Svelte 5, JavaScript/JSDoc,
+> minimal template) scaffolded into `frontend/`. Dev server verified serving
+> `/` and `/dashboard` (both HTTP 200); `npm run check` and `npm run build`
+> pass clean. `src/lib/` homes created with `.gitkeep` placeholders, to be
+> filled in later phases. Adapter is `adapter-auto` for now — the Firebase
+> hosting adapter is configured in Phase 11.
 
 ---
 
