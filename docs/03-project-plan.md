@@ -86,12 +86,16 @@ backend server, the teacher is in control, progress step by step.
   `node_modules/`, build output, and environment files (`.env*`).
 
 ### ✅ Phase 0 Checklist
-- [ ] `samisphere` repo exists on GitHub and is cloned locally
-- [ ] `frontend/`, `backend/`, `shared/`, `docs/` all exist
-- [ ] `backend/.gitkeep` and `shared/.gitkeep` are present
-- [ ] All three planning docs are in `docs/`
-- [ ] `.gitignore` is in place and ignores secrets + `node_modules`
-- [ ] First commit pushed to GitHub
+- [x] `samisphere` repo exists on GitHub and is cloned locally
+- [x] `frontend/`, `backend/`, `shared/`, `docs/` all exist
+- [x] `backend/.gitkeep` and `shared/.gitkeep` are present
+- [x] All three planning docs are in `docs/`
+- [x] `.gitignore` is in place and ignores secrets + `node_modules`
+- [x] First commit pushed to GitHub
+
+> **Phase 0 completed 2026-06-22.** Skeleton folders created (`frontend/` left
+> empty until Phase 1 scaffolds SvelteKit; `backend/` and `shared/` hold
+> `.gitkeep` placeholders). Stray `test.md` removed during tidy-up.
 
 ---
 
