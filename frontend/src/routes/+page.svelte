@@ -7,7 +7,7 @@
 	import { getRegistrations } from '$lib/services/registrations.js';
 
 	let registrations = $state(
-		/** @type {Array<{ id: string, name: string, date: string }>} */ ([])
+		/** @type {Array<{ id: string, name: string, date: string, course?: string, time?: string }>} */ ([])
 	);
 
 	async function load() {
@@ -30,7 +30,7 @@
 {:else}
 	<ul>
 		{#each registrations as r (r.id)}
-			<li>{r.name} — {r.date}</li>
+			<li>{r.name} — {r.course ?? '—'} {r.time ?? ''} — {r.date}</li>
 		{/each}
 	</ul>
 {/if}

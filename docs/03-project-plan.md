@@ -282,13 +282,24 @@ course + time slot (from Firestore) in a dropdown. Hidden slots never appear.
   + time as one registration. The hidden slot never appears as an option.
 
 ### ✅ Phase 4 Checklist
-- [ ] Course/slot data shape documented, matches doc 01
-- [ ] Test courses seeded (incl. at least one hidden)
-- [ ] `services/courses.js` returns only available courses
-- [ ] Dropdown shows real, available course/slots only
-- [ ] Hidden slot is confirmed *not* shown to students
-- [ ] A registration saves name + chosen course + time
-- [ ] Committed and pushed
+- [x] Course/slot data shape documented, matches doc 01
+- [x] Test courses seeded (incl. at least one hidden)
+- [x] `services/courses.js` returns only available courses
+- [x] Dropdown shows real, available course/slots only
+- [x] Hidden slot is confirmed *not* shown to students
+- [x] A registration saves name + chosen course + time
+- [x] Committed and pushed
+
+> **Phase 4 completed 2026-06-22.** Course/slot shape documented as a header
+> comment in `services/courses.js` (kept out of `shared/`, which doc 02 §6 keeps
+> empty in v1). `getAvailableCourses()` queries `where status == "available"`
+> (forward-compatible with Phase 10 rules) and sorts by course+time.
+> `components/student/CourseDropdown.svelte` binds the chosen `{course, time}`;
+> `RegistrationForm.svelte` now saves name + course + time. Seeded 3 test slots
+> via a temporary script (2 available, 1 hidden "Physics 201"), then removed the
+> script — seeded data is cleaned up in Phase 6. Verified live: dropdown showed
+> only the 2 available slots (hidden one absent); registering "Bob" for "Math
+> 101 — Wednesday 14:00" saved name+course+time. `npm run check` clean.
 
 ---
 
