@@ -457,13 +457,28 @@ languages; Persian renders right-to-left.
   keeps that language.
 
 ### ✅ Phase 7 Checklist
-- [ ] `svelte-i18n` configured, defaults to English
-- [ ] `en.json`, `ru.json`, `fa.json` cover all current text
-- [ ] No hard-coded user-facing English remains in components
-- [ ] Prominent switcher in the header changes all text on click
-- [ ] Persian renders right-to-left; EN/RU render left-to-right
-- [ ] Chosen language persists across pages
-- [ ] Committed and pushed
+- [x] `svelte-i18n` configured, defaults to English
+- [x] `en.json`, `ru.json`, `fa.json` cover all current text
+- [x] No hard-coded user-facing English remains in components
+- [x] Prominent switcher in the header changes all text on click
+- [x] Persian renders right-to-left; EN/RU render left-to-right
+- [x] Chosen language persists across pages
+- [x] Committed and pushed
+
+> **Phase 7 completed 2026-06-23.** `svelte-i18n` installed; `lib/i18n/index.js`
+> bundles `en/ru/fa.json` synchronously (default English). `stores/language.js`
+> holds the language list (🇬🇧🇷🇺🇮🇷), `setLanguage()` (persists to localStorage +
+> sets `<html dir>` RTL for `fa`), and `initLanguage()` (applied on mount in the
+> root layout). `components/common/LanguageSwitcher.svelte` is rendered in the
+> layout header on every page; active language highlighted. All component text
+> now uses `$_()` keys. Verified live: EN→RU→FA each flips all text; Persian
+> flips the whole layout to RTL; the choice persisted across `/`↔`/dashboard`.
+> `npm run check` clean.
+>
+> ⚠️ **Translation review pending:** the RU and FA translations were authored by
+> the agent and should be eyeballed by a native/fluent speaker (Samira) before
+> go-live. They live in `frontend/src/lib/i18n/ru.json` and `fa.json` — one file
+> each, easy to correct.
 
 ---
 

@@ -1,0 +1,62 @@
+{
+	"nav": {
+		"toDashboard": "Teacher dashboard →",
+		"toStudent": "← Back to student page"
+	},
+	"common": {
+		"loading": "Loading…"
+	},
+	"student": {
+		"subtitle": "Course registration — student page."
+	},
+	"form": {
+		"name": "Name",
+		"namePlaceholder": "Your name",
+		"course": "Course",
+		"chooseCourse": "Choose a course…",
+		"register": "Register",
+		"saving": "Saving…",
+		"saved": "Registration saved.",
+		"incomplete": "Please enter your name and choose a course.",
+		"error": "Something went wrong. Please try again."
+	},
+	"login": {
+		"title": "Teacher login",
+		"email": "Email",
+		"password": "Password",
+		"submit": "Log in",
+		"submitting": "Signing in…",
+		"error": "Incorrect email or password."
+	},
+	"dashboard": {
+		"title": "Teacher Dashboard",
+		"signedInAs": "Signed in as {email}",
+		"logout": "Log out"
+	},
+	"registrations": {
+		"title": "Registrations",
+		"empty": "No registrations yet.",
+		"name": "Name",
+		"course": "Course",
+		"time": "Time",
+		"date": "Date"
+	},
+	"courses": {
+		"title": "Manage courses",
+		"coursePlaceholder": "Course (e.g. Math 101)",
+		"timePlaceholder": "Time (e.g. Monday 10:00)",
+		"add": "Add course",
+		"empty": "No courses yet. Add one above.",
+		"course": "Course",
+		"time": "Time",
+		"status": "Status",
+		"actions": "Actions",
+		"hide": "Hide",
+		"show": "Show",
+		"edit": "Edit",
+		"save": "Save",
+		"cancel": "Cancel",
+		"statusAvailable": "available",
+		"statusHidden": "hidden"
+	}
+}

@@ -2,6 +2,7 @@
      on/off. Hiding a slot removes it from the student dropdown (doc 01 §6). -->
 <script>
 	import { onMount } from 'svelte';
+	import { _ } from 'svelte-i18n';
 	import {
 		getAllCourses,
 		addCourse,
@@ -67,26 +68,26 @@
 	}
 </script>
 
-<h2>Manage courses</h2>
+<h2>{$_('courses.title')}</h2>
 
 <form onsubmit={handleAdd}>
-	<input bind:value={newCourse} placeholder="Course (e.g. Math 101)" />
-	<input bind:value={newTime} placeholder="Time (e.g. Monday 10:00)" />
-	<button type="submit">Add course</button>
+	<input bind:value={newCourse} placeholder={$_('courses.coursePlaceholder')} />
+	<input bind:value={newTime} placeholder={$_('courses.timePlaceholder')} />
+	<button type="submit">{$_('courses.add')}</button>
 </form>
 
 {#if loading}
-	<p>Loading…</p>
+	<p>{$_('common.loading')}</p>
 {:else if courses.length === 0}
-	<p>No courses yet. Add one above.</p>
+	<p>{$_('courses.empty')}</p>
 {:else}
 	<table>
 		<thead>
 			<tr>
-				<th>Course</th>
-				<th>Time</th>
-				<th>Status</th>
-				<th>Actions</th>
+				<th>{$_('courses.course')}</th>
+				<th>{$_('courses.time')}</th>
+				<th>{$_('courses.status')}</th>
+				<th>{$_('courses.actions')}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -95,20 +96,20 @@
 					{#if editingId === c.id}
 						<td><input bind:value={editCourse} /></td>
 						<td><input bind:value={editTime} /></td>
-						<td>{c.status}</td>
+						<td>{c.status === 'available' ? $_('courses.statusAvailable') : $_('courses.statusHidden')}</td>
 						<td>
-							<button onclick={() => saveEdit(c.id)}>Save</button>
-							<button onclick={cancelEdit}>Cancel</button>
+							<button onclick={() => saveEdit(c.id)}>{$_('courses.save')}</button>
+							<button onclick={cancelEdit}>{$_('courses.cancel')}</button>
 						</td>
 					{:else}
 						<td>{c.course}</td>
 						<td>{c.time}</td>
-						<td>{c.status}</td>
+						<td>{c.status === 'available' ? $_('courses.statusAvailable') : $_('courses.statusHidden')}</td>
 						<td>
 							<button onclick={() => toggle(c)}>
-								{c.status === 'available' ? 'Hide' : 'Show'}
+								{c.status === 'available' ? $_('courses.hide') : $_('courses.show')}
 							</button>
-							<button onclick={() => startEdit(c)}>Edit</button>
+							<button onclick={() => startEdit(c)}>{$_('courses.edit')}</button>
 						</td>
 					{/if}
 				</tr>

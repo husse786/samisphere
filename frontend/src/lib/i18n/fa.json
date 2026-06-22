@@ -1,0 +1,62 @@
+{
+	"nav": {
+		"toDashboard": "پنل مدرس ←",
+		"toStudent": "→ بازگشت به صفحه دانش‌آموز"
+	},
+	"common": {
+		"loading": "در حال بارگذاری…"
+	},
+	"student": {
+		"subtitle": "ثبت‌نام در دوره‌ها — صفحه دانش‌آموز."
+	},
+	"form": {
+		"name": "نام",
+		"namePlaceholder": "نام شما",
+		"course": "دوره",
+		"chooseCourse": "یک دوره انتخاب کنید…",
+		"register": "ثبت‌نام",
+		"saving": "در حال ذخیره…",
+		"saved": "ثبت‌نام ذخیره شد.",
+		"incomplete": "لطفاً نام خود را وارد کرده و یک دوره انتخاب کنید.",
+		"error": "مشکلی پیش آمد. لطفاً دوباره تلاش کنید."
+	},
+	"login": {
+		"title": "ورود مدرس",
+		"email": "ایمیل",
+		"password": "رمز عبور",
+		"submit": "ورود",
+		"submitting": "در حال ورود…",
+		"error": "ایمیل یا رمز عبور نادرست است."
+	},
+	"dashboard": {
+		"title": "پنل مدرس",
+		"signedInAs": "وارد شده به عنوان {email}",
+		"logout": "خروج"
+	},
+	"registrations": {
+		"title": "ثبت‌نام‌ها",
+		"empty": "هنوز ثبت‌نامی وجود ندارد.",
+		"name": "نام",
+		"course": "دوره",
+		"time": "زمان",
+		"date": "تاریخ"
+	},
+	"courses": {
+		"title": "مدیریت دوره‌ها",
+		"coursePlaceholder": "دوره (مثلاً Math 101)",
+		"timePlaceholder": "زمان (مثلاً Monday 10:00)",
+		"add": "افزودن دوره",
+		"empty": "هنوز دوره‌ای وجود ندارد. از بالا اضافه کنید.",
+		"course": "دوره",
+		"time": "زمان",
+		"status": "وضعیت",
+		"actions": "عملیات",
+		"hide": "پنهان کردن",
+		"show": "نمایش",
+		"edit": "ویرایش",
+		"save": "ذخیره",
+		"cancel": "لغو",
+		"statusAvailable": "در دسترس",
+		"statusHidden": "پنهان"
+	}
+}

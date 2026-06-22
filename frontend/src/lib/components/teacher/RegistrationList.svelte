@@ -2,6 +2,7 @@
      public list from Phase 3. Only rendered once the teacher is logged in. -->
 <script>
 	import { onMount } from 'svelte';
+	import { _ } from 'svelte-i18n';
 	import { getRegistrations } from '$lib/services/registrations.js';
 
 	let registrations = $state(
@@ -18,20 +19,20 @@
 	});
 </script>
 
-<h2>Registrations</h2>
+<h2>{$_('registrations.title')}</h2>
 
 {#if loading}
-	<p>Loading…</p>
+	<p>{$_('common.loading')}</p>
 {:else if registrations.length === 0}
-	<p>No registrations yet.</p>
+	<p>{$_('registrations.empty')}</p>
 {:else}
 	<table>
 		<thead>
 			<tr>
-				<th>Name</th>
-				<th>Course</th>
-				<th>Time</th>
-				<th>Date</th>
+				<th>{$_('registrations.name')}</th>
+				<th>{$_('registrations.course')}</th>
+				<th>{$_('registrations.time')}</th>
+				<th>{$_('registrations.date')}</th>
 			</tr>
 		</thead>
 		<tbody>

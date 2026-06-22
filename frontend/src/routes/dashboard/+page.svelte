@@ -5,6 +5,7 @@
      security rules in Phase 10 — this gating is the UX layer.) -->
 <script>
 	import { onMount } from 'svelte';
+	import { _ } from 'svelte-i18n';
 	import { onAuthChange, signOutTeacher } from '$lib/services/auth.js';
 	import LoginForm from '$lib/components/teacher/LoginForm.svelte';
 	import RegistrationList from '$lib/components/teacher/RegistrationList.svelte';
@@ -19,19 +20,19 @@
 	onMount(() => onAuthChange((u) => (user = u)));
 </script>
 
-<h1>SamiSphere — Teacher Dashboard</h1>
+<h1>SamiSphere — {$_('dashboard.title')}</h1>
 
 {#if user === undefined}
-	<p>Loading…</p>
+	<p>{$_('common.loading')}</p>
 {:else if user === null}
 	<LoginForm />
 {:else}
 	<p>
-		Signed in as {user.email}
-		<button onclick={signOutTeacher}>Log out</button>
+		{$_('dashboard.signedInAs', { values: { email: user.email } })}
+		<button onclick={signOutTeacher}>{$_('dashboard.logout')}</button>
 	</p>
 	<CourseManager />
 	<RegistrationList />
 {/if}
 
-<p><a href="/">← Back to student page</a></p>
+<p><a href="/">{$_('nav.toStudent')}</a></p>

@@ -1,6 +1,7 @@
 <!-- Student registration form. Name + course/time-slot dropdown.
      Saves name + chosen course + time as one registration. -->
 <script>
+	import { _ } from 'svelte-i18n';
 	import { createRegistration } from '$lib/services/registrations.js';
 	import CourseDropdown from './CourseDropdown.svelte';
 
@@ -38,19 +39,19 @@
 
 <form onsubmit={handleSubmit}>
 	<label>
-		Name
-		<input bind:value={name} placeholder="Your name" />
+		{$_('form.name')}
+		<input bind:value={name} placeholder={$_('form.namePlaceholder')} />
 	</label>
 	<CourseDropdown bind:selected={selectedCourse} />
 	<button type="submit" disabled={status === 'saving'}>
-		{status === 'saving' ? 'Saving…' : 'Register'}
+		{status === 'saving' ? $_('form.saving') : $_('form.register')}
 	</button>
 </form>
 
 {#if status === 'saved'}
-	<p>Registration saved.</p>
+	<p>{$_('form.saved')}</p>
 {:else if status === 'incomplete'}
-	<p>Please enter your name and choose a course.</p>
+	<p>{$_('form.incomplete')}</p>
 {:else if status === 'error'}
-	<p>Something went wrong. Please try again.</p>
+	<p>{$_('form.error')}</p>
 {/if}

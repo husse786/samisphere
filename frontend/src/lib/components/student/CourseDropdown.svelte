@@ -3,6 +3,7 @@
      Binds `selected` — the chosen { course, time } object, or null. -->
 <script>
 	import { onMount } from 'svelte';
+	import { _ } from 'svelte-i18n';
 	import { getAvailableCourses } from '$lib/services/courses.js';
 
 	let {
@@ -27,9 +28,9 @@
 </script>
 
 <label>
-	Course
+	{$_('form.course')}
 	<select bind:value={selectedId}>
-		<option value="" disabled>Choose a course…</option>
+		<option value="" disabled>{$_('form.chooseCourse')}</option>
 		{#each courses as c (c.id)}
 			<option value={c.id}>{c.course} — {c.time}</option>
 		{/each}
