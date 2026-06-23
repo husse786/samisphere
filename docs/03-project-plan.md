@@ -697,9 +697,10 @@ registration form.
 > fields and **re-deployed live** by the agent (CLI already authenticated).
 > Verified: emulator rules re-test 5/5; live form submit of a full record
 > succeeded under the new rules; emulator confirmed the enriched notification
-> message; landing verified in EN and FA/RTL. ⏳ Dashboard new-columns view to be
-> spot-checked by the human (behind login). RU/FA translations for the new
-> strings still pending a fluent-speaker review (see Phase 7 note).
+> message; landing verified in EN and FA/RTL. Human confirmed the dashboard
+> new-columns view looks good (may be refined further after deployment). RU/FA
+> translations for the new strings still pending a fluent-speaker review (see
+> Phase 7 note).
 
 ---
 
