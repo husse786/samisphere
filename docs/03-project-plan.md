@@ -628,28 +628,24 @@ server needed.
 
 ### ✅ Phase 10 Checklist
 - [x] Security rules written per doc 01 §7
-- [ ] Rules deployed to Firebase ⏳ (needs `firebase login` — human step)
-- [x] Logged-out user: can register, cannot read registrations, cannot edit courses *(emulator-verified; re-verify live after deploy)*
-- [x] Logged-in teacher: full access verified *(emulator-verified)*
-- [ ] Student dropdown still loads available courses under the rules ⏳ (verify live after deploy)
-- [x] Committed and pushed *(rules committed; deploy pending)*
+- [x] Rules deployed to Firebase
+- [x] Logged-out user: can register, cannot read registrations, cannot edit courses
+- [x] Logged-in teacher: full access verified
+- [x] Student dropdown still loads available courses under the rules
+- [x] Committed and pushed
 
-> **Phase 10 in progress 2026-06-23.** Real `firestore.rules` written (replacing
-> the Phase 9 temporary open rules), enforcing doc 01 §7. The teacher is pinned
-> to `samira@samisphere.com` by email so a self-created auth account cannot gain
-> teacher access. Public course reads are constrained to `status == "available"`
-> (anonymous can't query all courses, so hidden slots stay private). Validated
-> in the Firebase emulator with `@firebase/rules-unit-testing`: **13/13**
-> assertions passed across anonymous / intruder / teacher contexts.
->
-> ⏳ **Remaining (needs human):** deploy the rules to the live project, then
-> re-verify live. Deploying rules only needs `firebase login` (no Blaze
-> required). Steps:
->   1. Human runs `firebase login` (interactive Google auth in their terminal).
->   2. Then `firebase deploy --only firestore:rules` (agent can run this once
->      logged in).
->   3. Live-verify: anonymous can register + see available courses but cannot
->      read registrations; teacher dashboard still works.
+> **Phase 10 completed 2026-06-23.** Real `firestore.rules` enforce doc 01 §7.
+> Teacher pinned to `samira@samisphere.com` by email so a self-created auth
+> account cannot gain teacher access. Public course reads constrained to
+> `status == "available"` (anonymous can't query all courses → hidden slots stay
+> private). Validated in the emulator with `@firebase/rules-unit-testing`
+> (**13/13** across anonymous / intruder / teacher). Human ran `firebase login`
+> and deployed the rules. Live-verified by the agent against real Firestore as
+> an anonymous client (**5/5**): can register + query available courses; denied
+> reading registrations, reading all courses, and creating courses. Student
+> dropdown confirmed loading the available course live under the rules.
+> Firestore is no longer in open test mode. (A `RulesLiveTest` registration was
+> created during the live check — harmless; visible in the dashboard.)
 
 ---
 
