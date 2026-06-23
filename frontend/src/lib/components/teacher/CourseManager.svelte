@@ -101,6 +101,7 @@
 {:else if courses.length === 0}
 	<p>{$_('courses.empty')}</p>
 {:else}
+	<div class="table-scroll">
 	<table>
 		<thead>
 			<tr>
@@ -158,9 +159,16 @@
 			{/each}
 		</tbody>
 	</table>
+	</div>
 {/if}
 
 <style>
+	.table-scroll {
+		overflow-x: auto;
+	}
+	.table-scroll table {
+		min-width: 720px;
+	}
 	.add-form {
 		display: flex;
 		flex-wrap: wrap;

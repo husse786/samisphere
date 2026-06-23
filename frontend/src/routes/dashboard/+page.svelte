@@ -21,7 +21,7 @@
 	onMount(() => onAuthChange((u) => (user = u)));
 </script>
 
-<div class="container">
+<div class="container-wide">
 	<h1>{$_('dashboard.title')}</h1>
 
 	{#if user === undefined}

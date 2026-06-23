@@ -43,12 +43,21 @@
 	--container-width: 760px;
 }
 
-/* Centered page container for the app pages (form, dashboard). The landing
-   page opts out so its hero can go full-bleed. */
+/* Centered page container for narrow app pages (the registration form). The
+   landing page opts out so its hero can go full-bleed. */
 .container {
 	max-width: var(--container-width);
 	margin: 0 auto;
 	padding: var(--space-6) var(--space-4);
+}
+
+/* Wide, fluid container for the dashboard — fills the window on desktop, scales
+   down on tablet/phone. Capped so wide tables stay readable on huge monitors. */
+.container-wide {
+	width: 100%;
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: var(--space-6) clamp(var(--space-4), 4vw, var(--space-8));
 }
 
 /* Base / light reset */
