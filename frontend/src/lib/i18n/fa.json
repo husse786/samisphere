@@ -78,6 +78,10 @@
 		"save": "ذخیره",
 		"cancel": "لغو",
 		"statusAvailable": "در دسترس",
-		"statusHidden": "پنهان"
+		"statusHidden": "پنهان",
+		"meetingLinkPlaceholder": "لینک جلسه (اختیاری)",
+		"link": "لینک",
+		"startClass": "شروع کلاس",
+		"noLink": "بدون لینک"
 	}
 }

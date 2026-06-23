@@ -4,12 +4,15 @@
 //
 // Course / time-slot data shape (matches doc 01 §4):
 //   {
-//     course:   "Math 101",        // the course name
-//     time:     "Monday 10:00",    // the time slot
-//     status:   "available",       // "available" → shown to students;
-//                                  // "hidden"    → never shown
-//     capacity: 20                 // optional, reserved for a future auto-full
-//                                  // feature (not used in v1)
+//     course:      "Math 101",            // the course name
+//     time:        "Monday 10:00",        // the time slot
+//     status:      "available",           // "available" → shown to students;
+//                                         // "hidden"    → never shown
+//     capacity:    20,                    // optional, reserved for a future
+//                                         // auto-full feature (not used in v1)
+//     meetingLink: "https://meet…"        // optional static online-class URL
+//                                         // (Google Meet / Teams / Jitsi). May
+//                                         // be empty or absent.
 //   }
 import { db } from '$lib/config/firebase.js';
 import {
@@ -28,14 +31,14 @@ const COLLECTION = 'courses';
  * Read the course/slots a student is allowed to see — only `status:
  * "available"`. Hidden slots are filtered out by the query itself, so they
  * never reach the browser. Sorted by course then time for a tidy dropdown.
- * @returns {Promise<Array<{ id: string, course: string, time: string, status: string, capacity?: number }>>}
+ * @returns {Promise<Array<{ id: string, course: string, time: string, status: string, capacity?: number, meetingLink?: string }>>}
  */
 export async function getAvailableCourses() {
 	const q = query(collection(db, COLLECTION), where('status', '==', 'available'));
 	const snap = await getDocs(q);
 	const courses = snap.docs.map(
 		(d) =>
-			/** @type {{ id: string, course: string, time: string, status: string, capacity?: number }} */ ({
+			/** @type {{ id: string, course: string, time: string, status: string, capacity?: number, meetingLink?: string }} */ ({
 				id: d.id,
 				...d.data()
 			})
@@ -47,13 +50,13 @@ export async function getAvailableCourses() {
 /**
  * Read ALL course/slots — including hidden ones — for the teacher dashboard.
  * Sorted by course then time.
- * @returns {Promise<Array<{ id: string, course: string, time: string, status: string, capacity?: number }>>}
+ * @returns {Promise<Array<{ id: string, course: string, time: string, status: string, capacity?: number, meetingLink?: string }>>}
  */
 export async function getAllCourses() {
 	const snap = await getDocs(collection(db, COLLECTION));
 	const courses = snap.docs.map(
 		(d) =>
-			/** @type {{ id: string, course: string, time: string, status: string, capacity?: number }} */ ({
+			/** @type {{ id: string, course: string, time: string, status: string, capacity?: number, meetingLink?: string }} */ ({
 				id: d.id,
 				...d.data()
 			})
@@ -64,20 +67,21 @@ export async function getAllCourses() {
 
 /**
  * Add a new course/slot. Starts `available` so it shows to students right away.
- * @param {{ course: string, time: string, capacity?: number }} fields
+ * @param {{ course: string, time: string, capacity?: number, meetingLink?: string }} fields
  * @returns {Promise<import('firebase/firestore').DocumentReference>}
  */
-export function addCourse({ course, time, capacity }) {
-	/** @type {{ course: string, time: string, status: string, capacity?: number }} */
+export function addCourse({ course, time, capacity, meetingLink }) {
+	/** @type {{ course: string, time: string, status: string, capacity?: number, meetingLink?: string }} */
 	const data = { course, time, status: 'available' };
 	if (capacity !== undefined) data.capacity = capacity;
+	if (meetingLink) data.meetingLink = meetingLink; // only store a non-empty link
 	return addDoc(collection(db, COLLECTION), data);
 }
 
 /**
- * Edit an existing course/slot's fields (e.g. course name or time).
+ * Edit an existing course/slot's fields (e.g. course name, time, meeting link).
  * @param {string} id
- * @param {{ course?: string, time?: string, capacity?: number }} fields
+ * @param {{ course?: string, time?: string, capacity?: number, meetingLink?: string }} fields
  */
 export function updateCourse(id, fields) {
 	return updateDoc(doc(db, COLLECTION, id), fields);

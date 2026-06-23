@@ -78,6 +78,10 @@
 		"save": "Сохранить",
 		"cancel": "Отмена",
 		"statusAvailable": "доступен",
-		"statusHidden": "скрыт"
+		"statusHidden": "скрыт",
+		"meetingLinkPlaceholder": "Ссылка на встречу (необязательно)",
+		"link": "Ссылка",
+		"startClass": "Начать урок",
+		"noLink": "Нет ссылки"
 	}
 }

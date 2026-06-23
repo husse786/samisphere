@@ -78,6 +78,10 @@
 		"save": "Save",
 		"cancel": "Cancel",
 		"statusAvailable": "available",
-		"statusHidden": "hidden"
+		"statusHidden": "hidden",
+		"meetingLinkPlaceholder": "Meeting link (optional)",
+		"link": "Link",
+		"startClass": "Start class",
+		"noLink": "No link"
 	}
 }

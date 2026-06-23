@@ -704,6 +704,36 @@ registration form.
 
 ---
 
+## Phase 10.6 — Optional meeting link per course
+
+**Added 2026-06-23** (post-v1, requested by the human). A small additive change:
+one optional `meetingLink` field per course so Samira can attach a static
+online-class URL (Google Meet / Teams / Jitsi), start class from the dashboard,
+and copy the link to send to students.
+
+### ✅ Phase 10.6 Checklist
+- [x] `meetingLink` documented in the course shape comment (`services/courses.js`) + doc 01 §4
+- [x] Add + edit forms in `CourseManager.svelte` have an optional link field
+- [x] `addCourse()` / `updateCourse()` persist `meetingLink`
+- [x] Dashboard shows a "Start class" button (new tab, `rel="noopener"`) for courses with a link
+- [x] Courses without a link still work (muted "No link"; no errors)
+- [x] `firestore.rules` validates the optional field and is re-deployed
+- [x] Old `meetingLink`-less courses still display and function
+- [x] Committed and pushed
+
+> **Phase 10.6 completed 2026-06-23.** `meetingLink` added as an optional course
+> field (stored only when non-empty; empty string clears it on edit).
+> `CourseManager` gained a link input in the add form and inline edit, plus a
+> "Link" column showing a styled **Start class** button (`target="_blank"
+> rel="noopener"`) and the selectable raw URL, or a muted "No link". i18n keys
+> added to en/ru/fa. `firestore.rules` now validates `meetingLink is string`
+> when present — emulator-verified **6/6** (old shape, string, empty, non-string
+> denied, update, anon denied) — and re-deployed. New UI built and deployed to
+> hosting. ⏳ Live dashboard UI spot-check (add a course with a link → Start
+> class button) to be done by the human (behind login).
+
+---
+
 ## Phase 11 — Testing & go-live
 
 **Goal:** Everything is connected with real values, deployed, and tested

@@ -85,10 +85,13 @@ Each slot the teacher creates is stored with a status they can flip.
 
 ```
 {
-  course:   "Math 101",
-  time:     "Monday 10:00",
-  status:   "available",   // teacher flips to "hidden" to remove from the form
-  capacity: 20             // optional — reserved for future auto-full feature
+  course:      "Math 101",
+  time:        "Monday 10:00",
+  status:      "available",   // teacher flips to "hidden" to remove from the form
+  capacity:    20,            // optional — reserved for future auto-full feature
+  meetingLink: "https://meet.google.com/abc-defg-hij"
+                              // optional (Phase 10.6) — static online-class URL
+                              // the teacher attaches; may be empty/absent
 }
 ```
 

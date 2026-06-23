@@ -22,8 +22,12 @@ service cloud.firestore {
       // constrained to status == "available" (which the student form does), so
       // hidden slots never reach the public. The teacher may read everything.
       allow read: if resource.data.status == 'available' || isTeacher();
-      // Only the teacher may add / edit / hide.
-      allow create, update, delete: if isTeacher();
+      // Only the teacher may add / edit / hide. The optional `meetingLink`, when
+      // present, must be a string.
+      allow create, update: if isTeacher()
+        && (!('meetingLink' in request.resource.data)
+          || request.resource.data.meetingLink is string);
+      allow delete: if isTeacher();
     }
 
     // Registrations.
