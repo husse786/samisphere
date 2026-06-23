@@ -29,9 +29,13 @@ service cloud.firestore {
     // Registrations.
     match /registrations/{registrationId} {
       // Anyone may create a registration, with basic shape validation to limit
-      // junk: a non-empty name plus a course and time string.
-      allow create: if request.resource.data.name is string
-        && request.resource.data.name.size() > 0
+      // junk: non-empty first/last name + email, plus course and time strings.
+      allow create: if request.resource.data.firstName is string
+        && request.resource.data.firstName.size() > 0
+        && request.resource.data.lastName is string
+        && request.resource.data.lastName.size() > 0
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 0
         && request.resource.data.course is string
         && request.resource.data.time is string;
       // Only the teacher may read / edit / delete.

@@ -51,6 +51,10 @@ The whole system is built from three connected parts.
 
 ### A. Public Website (what students use)
 
+- A welcoming **landing page** (`/`) with the SamiSphere wordmark, a short
+  intro, and a call-to-action button to the registration form. *(Added in
+  Phase 10.5.)*
+- The **registration form** lives on its own page (`/register`).
 - Prominent, highly visible language switcher (🇬🇧 English / 🇷🇺 Russian / 🇮🇷 Persian).
 - Persian renders **right-to-left (RTL)**; English and Russian render left-to-right.
 - A registration form where the student selects a course + time slot from a
@@ -93,16 +97,26 @@ Each slot the teacher creates is stored with a status they can flip.
 
 ### Registration
 
-One entry is created each time a student registers.
+One entry is created each time a student registers. (Expanded in Phase 10.5 to
+collect fuller student details — see doc 03.)
 
 ```
 {
-  name:   "Anna",
-  course: "Math 101",
-  time:   "Monday 10:00",
-  date:   "2026-06-22"
+  firstName: "Anna",
+  lastName:  "Ivanova",
+  email:     "anna@example.com",
+  phone:     "+994 50 123 45 67",
+  city:      "Baku",
+  country:   "Azerbaijan",
+  course:    "Math 101",
+  time:      "Monday 10:00",
+  date:      "2026-06-22"
 }
 ```
+
+> Note: addresses are limited to **city + country** (no street). Early
+> registrations created before Phase 10.5 may instead have a single `name`
+> field; the dashboard and notification handle both shapes.
 
 ---
 

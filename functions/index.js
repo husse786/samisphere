@@ -22,10 +22,17 @@ exports.notifyOnRegistration = onDocumentCreated(
 			return;
 		}
 
-		const name = data.name || 'Someone';
+		// Full name from first+last, falling back to the legacy single `name`.
+		const fullName =
+			[data.firstName, data.lastName].filter(Boolean).join(' ') || data.name || 'Someone';
 		const course = data.course || '—';
 		const time = data.time || '—';
-		const message = `New registration: ${name} signed up for ${course} — ${time}.`;
+		const contactParts = [data.email, data.phone].filter(Boolean).join(' · ');
+		const location = [data.city, data.country].filter(Boolean).join(', ');
+
+		let message = `New registration: ${fullName} signed up for ${course} — ${time}.`;
+		if (contactParts) message += `\nContact: ${contactParts}`;
+		if (location) message += `\nFrom: ${location}`;
 
 		// Placeholders not yet filled → log only (Phase 9 state).
 		if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {

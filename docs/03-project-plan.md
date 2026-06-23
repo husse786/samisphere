@@ -46,6 +46,7 @@ backend server, the teacher is in control, progress step by step.
 | 8 | Branding & styling | SamiSphere wordmark + centralized theme applied |
 | 9 | Notifications (Telegram) | Built with placeholders, wired during testing |
 | 10 | Security rules | Firestore locked down per the rules in doc 01 |
+| 10.5 | Landing page + fuller details | Designed landing at `/`; form on `/register` collects name/email/phone/city/country |
 | 11 | Testing & go-live | Real values plugged in, deployed, end-to-end tested |
 
 > **Note on order:** The student-facing core (Phases 3–4) is built **before** the
@@ -646,6 +647,59 @@ server needed.
 > dropdown confirmed loading the available course live under the rules.
 > Firestore is no longer in open test mode. (A `RulesLiveTest` registration was
 > created during the live check — harmless; visible in the dashboard.)
+
+---
+
+## Phase 10.5 — Landing page + expanded registration details
+
+**Added 2026-06-23** (not in the original plan — requested by the human). Two
+changes: a designed **landing page**, and **fuller student details** on the
+registration form.
+
+### Task 10.5.1 — Landing page at `/`
+- **Purpose:** A welcoming front door for the site.
+- **Done when:** `/` shows a designed hero — SamiSphere wordmark, a short
+  welcome + intro, a prominent CTA button to the registration form, with the
+  language switcher available (in the header).
+
+### Task 10.5.2 — Move the registration form to `/register`
+- **Purpose:** Separate the landing page from the sign-up form.
+- **Done when:** The form lives at `/register`, reached from the landing CTA.
+
+### Task 10.5.3 — Expand the registration fields
+- **Purpose:** Collect more than just a name.
+- **Done when:** The form collects **first name, surname, email, phone, city,
+  country** (address = city + country only, no street) plus the course, with
+  validation (all required; basic email check). Saved as one registration.
+
+### Task 10.5.4 — Update dashboard, notification, and rules for the new shape
+- **Purpose:** Keep the rest of the system in sync with the new data.
+- **Done when:** the dashboard list shows the new columns; the Telegram message
+  includes the fuller details; and `firestore.rules` validates the new shape
+  (and is re-deployed). Old `name`-only records still display/notify gracefully.
+
+### ✅ Phase 10.5 Checklist
+- [x] Landing page at `/` (designed hero + CTA), switcher visible
+- [x] Registration form moved to `/register`
+- [x] Form collects first name, surname, email, phone, city, country + course
+- [x] Dashboard list shows the new columns
+- [x] Telegram message includes the fuller details
+- [x] Security rules updated for the new shape and re-deployed
+- [x] Committed and pushed
+
+> **Phase 10.5 completed 2026-06-23.** New landing page (`/`) with a hero
+> (gradient wordmark + glow, headline, intro, pill CTA → `/register`). Form moved
+> to `/register` and expanded to first/last name, email, phone, city, country +
+> course, with validation. `services/registrations.js`, `RegistrationList`
+> (new columns + horizontal scroll; legacy `name` handled), the Cloud Function
+> message (now multi-line with contact + location), and all three i18n files
+> updated. `firestore.rules` create-validation updated for the new required
+> fields and **re-deployed live** by the agent (CLI already authenticated).
+> Verified: emulator rules re-test 5/5; live form submit of a full record
+> succeeded under the new rules; emulator confirmed the enriched notification
+> message; landing verified in EN and FA/RTL. ⏳ Dashboard new-columns view to be
+> spot-checked by the human (behind login). RU/FA translations for the new
+> strings still pending a fluent-speaker review (see Phase 7 note).
 
 ---
 

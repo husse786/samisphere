@@ -1,23 +1,39 @@
 {
 	"nav": {
 		"toDashboard": "Teacher dashboard →",
-		"toStudent": "← Back to student page"
+		"toHome": "← Back to home"
 	},
 	"common": {
 		"loading": "Loading…"
 	},
+	"landing": {
+		"welcome": "Course registration, made simple.",
+		"intro": "Pick your language, choose a course and time, and register in just a few clicks. Samira takes care of the rest.",
+		"cta": "Register for a course"
+	},
 	"student": {
-		"subtitle": "Course registration — student page."
+		"subtitle": "Fill in your details and choose a course below."
 	},
 	"form": {
-		"name": "Name",
-		"namePlaceholder": "Your name",
+		"firstName": "First name",
+		"firstNamePlaceholder": "Your first name",
+		"lastName": "Surname",
+		"lastNamePlaceholder": "Your surname",
+		"email": "Email",
+		"emailPlaceholder": "you@example.com",
+		"phone": "Phone",
+		"phonePlaceholder": "Your phone number",
+		"city": "City",
+		"cityPlaceholder": "Your city",
+		"country": "Country",
+		"countryPlaceholder": "Your country",
 		"course": "Course",
 		"chooseCourse": "Choose a course…",
 		"register": "Register",
 		"saving": "Saving…",
 		"saved": "Registration saved.",
-		"incomplete": "Please enter your name and choose a course.",
+		"incomplete": "Please fill in all fields and choose a course.",
+		"invalidEmail": "Please enter a valid email address.",
 		"error": "Something went wrong. Please try again."
 	},
 	"login": {
@@ -37,6 +53,9 @@
 		"title": "Registrations",
 		"empty": "No registrations yet.",
 		"name": "Name",
+		"email": "Email",
+		"phone": "Phone",
+		"location": "Location",
 		"course": "Course",
 		"time": "Time",
 		"date": "Date"
