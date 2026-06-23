@@ -68,7 +68,18 @@
 			status = 'error';
 		}
 	}
+
+	// Close the success popup and let the student register again.
+	function dismiss() {
+		status = 'idle';
+	}
+
+	function handleKeydown(/** @type {KeyboardEvent} */ event) {
+		if (status === 'saved' && event.key === 'Escape') dismiss();
+	}
 </script>
+
+<svelte:window onkeydown={handleKeydown} />
 
 <form onsubmit={handleSubmit} class="reg-form">
 	<div class="row">
@@ -110,14 +121,28 @@
 	</Button>
 </form>
 
-{#if status === 'saved'}
-	<p class="msg success">{$_('form.saved')}</p>
-{:else if status === 'incomplete'}
+{#if status === 'incomplete'}
 	<p class="msg">{$_('form.incomplete')}</p>
 {:else if status === 'invalidEmail'}
 	<p class="msg error">{$_('form.invalidEmail')}</p>
 {:else if status === 'error'}
 	<p class="msg error">{$_('form.error')}</p>
+{/if}
+
+{#if status === 'saved'}
+	<!-- Success popup -->
+	<div class="modal-overlay">
+		<button type="button" class="backdrop" aria-label={$_('form.stayHere')} onclick={dismiss}></button>
+		<div class="modal" role="dialog" aria-modal="true" aria-labelledby="success-title" tabindex="-1">
+			<div class="emoji">🎉</div>
+			<h3 id="success-title">{$_('form.successTitle')}</h3>
+			<p class="modal-body">{$_('form.successBody')}</p>
+			<div class="modal-actions">
+				<Button onclick={dismiss}>{$_('form.stayHere')}</Button>
+				<a class="home-btn" href="/">{$_('form.goHome')}</a>
+			</div>
+		</div>
+	</div>
 {/if}
 
 <style>
@@ -150,10 +175,88 @@
 		margin-top: var(--space-4);
 		font-weight: 600;
 	}
-	.msg.success {
-		color: var(--color-accent);
-	}
 	.msg.error {
 		color: var(--color-danger);
+	}
+
+	/* Success popup */
+	.modal-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 50;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--space-4);
+		background: rgba(10, 15, 30, 0.72);
+		backdrop-filter: blur(4px);
+		animation: fade-in 0.18s ease;
+	}
+	.backdrop {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+	}
+	.modal {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		max-width: 420px;
+		background: var(--color-surface);
+		border-radius: 18px;
+		padding: var(--space-8) var(--space-6);
+		text-align: center;
+		box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+		animation: pop-in 0.22s cubic-bezier(0.18, 0.9, 0.32, 1.2);
+	}
+	.emoji {
+		font-size: 3rem;
+		line-height: 1;
+		margin-bottom: var(--space-3);
+	}
+	.modal h3 {
+		margin: 0 0 var(--space-2);
+		font-size: 1.5rem;
+	}
+	.modal-body {
+		margin: 0 0 var(--space-6);
+		color: var(--color-text-muted);
+		line-height: 1.6;
+	}
+	.modal-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+		justify-content: center;
+	}
+	.home-btn {
+		display: inline-flex;
+		align-items: center;
+		padding: var(--space-2) var(--space-4);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		font-weight: 600;
+		color: var(--color-text);
+		text-decoration: none;
+	}
+	.home-btn:hover {
+		border-color: var(--color-primary);
+		color: var(--color-primary);
+		text-decoration: none;
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+	}
+	@keyframes pop-in {
+		from {
+			opacity: 0;
+			transform: translateY(8px) scale(0.96);
+		}
 	}
 </style>

@@ -9,7 +9,7 @@
 	"landing": {
 		"greeting": "Hi, I'm Samira 👋",
 		"headline": "Learn Russian or prepare for school — online.",
-		"intro": "Friendly one-on-one online sessions, built around you and your goals — from absolute beginner to advanced, everyday conversation to school preparation. Pick a course and register, and I'll personally reach out to arrange a time that fits you.",
+		"intro": "Personal online lessons — solo or in a small group — shaped around you and your goals. From your very first words to confident conversation, or focused school preparation. Register below and I'll reach out personally to arrange a time that suits you.",
 		"cta": "Register for a course",
 		"qrNote": "Or scan to register from your phone"
 	},
@@ -34,6 +34,10 @@
 		"register": "Register",
 		"saving": "Saving…",
 		"saved": "Registration saved.",
+		"successTitle": "Yuhu! You're registered 🎉",
+		"successBody": "Thanks for signing up. Samira will contact you soon to arrange your class.",
+		"stayHere": "Stay on this page",
+		"goHome": "Back to home",
 		"incomplete": "Please fill in all fields and choose a course.",
 		"invalidEmail": "Please enter a valid email address.",
 		"error": "Something went wrong. Please try again."
