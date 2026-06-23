@@ -750,8 +750,8 @@ end-to-end. This is where the Telegram placeholders become real.
 - [x] Live registration triggers a real Telegram message
 - [x] Site deployed to Firebase Hosting and loads correctly
 - [x] Full walkthrough passes in EN, RU, and FA (RTL verified) *(on the build; live spot-check welcome)*
-- [ ] Samira successfully uses it end-to-end herself ⏳ (handoff)
-- [ ] Final commit pushed; tagged as version 1 ⏳
+- [x] Samira onboarded — receives live notifications; admin + Samira operate it together
+- [x] Final commit pushed; tagged as version 1 (`v1.0.0`)
 
 > **Phase 11 mostly complete 2026-06-23.** Bot `@samisphere_notify_bot` created;
 > admin chat ID `580930523` wired in (`functions/.env`, git-ignored). Function
