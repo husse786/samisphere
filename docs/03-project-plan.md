@@ -627,12 +627,29 @@ server needed.
 - **Done when:** A logged-out student can still see and select available courses.
 
 ### ✅ Phase 10 Checklist
-- [ ] Security rules written per doc 01 §7
-- [ ] Rules deployed to Firebase
-- [ ] Logged-out user: can register, cannot read registrations, cannot edit courses
-- [ ] Logged-in teacher: full access verified
-- [ ] Student dropdown still loads available courses under the rules
-- [ ] Committed and pushed
+- [x] Security rules written per doc 01 §7
+- [ ] Rules deployed to Firebase ⏳ (needs `firebase login` — human step)
+- [x] Logged-out user: can register, cannot read registrations, cannot edit courses *(emulator-verified; re-verify live after deploy)*
+- [x] Logged-in teacher: full access verified *(emulator-verified)*
+- [ ] Student dropdown still loads available courses under the rules ⏳ (verify live after deploy)
+- [x] Committed and pushed *(rules committed; deploy pending)*
+
+> **Phase 10 in progress 2026-06-23.** Real `firestore.rules` written (replacing
+> the Phase 9 temporary open rules), enforcing doc 01 §7. The teacher is pinned
+> to `samira@samisphere.com` by email so a self-created auth account cannot gain
+> teacher access. Public course reads are constrained to `status == "available"`
+> (anonymous can't query all courses, so hidden slots stay private). Validated
+> in the Firebase emulator with `@firebase/rules-unit-testing`: **13/13**
+> assertions passed across anonymous / intruder / teacher contexts.
+>
+> ⏳ **Remaining (needs human):** deploy the rules to the live project, then
+> re-verify live. Deploying rules only needs `firebase login` (no Blaze
+> required). Steps:
+>   1. Human runs `firebase login` (interactive Google auth in their terminal).
+>   2. Then `firebase deploy --only firestore:rules` (agent can run this once
+>      logged in).
+>   3. Live-verify: anonymous can register + see available courses but cannot
+>      read registrations; teacher dashboard still works.
 
 ---
 

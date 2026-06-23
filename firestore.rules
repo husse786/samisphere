@@ -1,11 +1,43 @@
 rules_version = '2';
 
+// SamiSphere Firestore security rules (doc 01 §7).
+//   - Anyone may CREATE a registration (students sign up).
+//   - Only the logged-in teacher may READ / EDIT / DELETE registrations.
+//   - Only the logged-in teacher may ADD / EDIT / HIDE courses.
+//   - Anyone may READ AVAILABLE courses (to fill the student dropdown).
 service cloud.firestore {
   match /databases/{database}/documents {
-    // ⚠️ TEMPORARY open rules — matches the current Firestore test mode.
-    //    Replaced with the real, locked-down rules in Phase 10 (doc 01 §7).
-    match /{document=**} {
-      allow read, write: if true;
+
+    // The single teacher (Samira). Pinning her email means that even if someone
+    // self-creates an auth account, they do NOT get teacher access — only her
+    // account does. (Her email can't be re-registered: it's already taken.)
+    function isTeacher() {
+      return request.auth != null
+        && request.auth.token.email == 'samira@samisphere.com';
     }
+
+    // Courses / time slots.
+    match /courses/{courseId} {
+      // Public reads are limited to available slots: an anonymous query must be
+      // constrained to status == "available" (which the student form does), so
+      // hidden slots never reach the public. The teacher may read everything.
+      allow read: if resource.data.status == 'available' || isTeacher();
+      // Only the teacher may add / edit / hide.
+      allow create, update, delete: if isTeacher();
+    }
+
+    // Registrations.
+    match /registrations/{registrationId} {
+      // Anyone may create a registration, with basic shape validation to limit
+      // junk: a non-empty name plus a course and time string.
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.course is string
+        && request.resource.data.time is string;
+      // Only the teacher may read / edit / delete.
+      allow read, update, delete: if isTeacher();
+    }
+
+    // Anything not matched above is denied by default.
   }
 }
