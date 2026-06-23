@@ -745,13 +745,28 @@ end-to-end. This is where the Telegram placeholders become real.
   notification from a real registration — on her own.
 
 ### ✅ Phase 11 Checklist
-- [ ] Telegram bot created; Samira's chat ID obtained
-- [ ] Real token + chat ID filled in (stored safely, not on GitHub)
-- [ ] Live registration triggers a real Telegram message to Samira
-- [ ] Site deployed to Firebase Hosting and loads correctly
-- [ ] Full walkthrough passes in EN, RU, and FA (RTL verified)
-- [ ] Samira successfully uses it end-to-end herself
-- [ ] Final commit pushed; tagged as version 1
+- [x] Telegram bot created; chat ID obtained
+- [x] Real token + chat ID filled in (stored safely, not on GitHub)
+- [x] Live registration triggers a real Telegram message
+- [x] Site deployed to Firebase Hosting and loads correctly
+- [x] Full walkthrough passes in EN, RU, and FA (RTL verified) *(on the build; live spot-check welcome)*
+- [ ] Samira successfully uses it end-to-end herself ⏳ (handoff)
+- [ ] Final commit pushed; tagged as version 1 ⏳
+
+> **Phase 11 mostly complete 2026-06-23.** Bot `@samisphere_notify_bot` created;
+> admin chat ID `580930523` wired in (`functions/.env`, git-ignored). Function
+> supports multiple comma-separated chat IDs (admin now; +Samira at handoff).
+> Cloud Function deployed to `me-central1` (first 2nd-gen deploy took 3 tries
+> while Google provisioned service agents — normal). Site deployed via
+> adapter-static SPA to **https://samisphere-82309.web.app**. Verified in
+> production: anonymous live registration → deployed function fired → real
+> Telegram message delivered (confirmed in function logs). Trilingual UI + RTL
+> verified on the identical build locally.
+>
+> ⏳ **Remaining:** (a) optional live trilingual spot-check by the human;
+> (b) clean up test registrations from the live DB (Anna/Bob/Sascha/Leyla/
+> RulesLiveTest/Live Test — deletes need the teacher login or Firebase Console);
+> (c) hand off to Samira (add her chat ID, transfer ownership); (d) tag v1.
 
 ---
 
