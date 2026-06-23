@@ -1,17 +1,20 @@
-// SamiSphere Cloud Function — notifies the teacher on Telegram when a student
-// registers. Gen-2 Firestore trigger: fires automatically on each new document
-// in the `registrations` collection (doc 01 §5).
+// SamiSphere Cloud Function — notifies the teacher (and any admins) on Telegram
+// when a student registers. Gen-2 Firestore trigger: fires automatically on each
+// new document in the `registrations` collection (doc 01 §5).
 //
-// ⚠️ PLACEHOLDER credentials (Phase 9). TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID
-//    are read from the environment and are EMPTY until Phase 11, when the real
-//    bot is created and the values are filled into functions/.env (git-ignored).
-//    Until then the function still runs and LOGS the message it *would* send, so
-//    the trigger itself is verifiable before Telegram is connected.
+// Credentials come from the environment (functions/.env, git-ignored; uploaded
+// with the function on deploy). TELEGRAM_CHAT_ID may hold MULTIPLE chat IDs,
+// comma-separated — every recipient gets the message. If credentials are empty,
+// the function just LOGS the message it would send.
 const { onDocumentCreated } = require('firebase-functions/v2/firestore');
 const logger = require('firebase-functions/logger');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
+// One or more chat IDs, comma-separated (e.g. admin + teacher).
+const TELEGRAM_CHAT_IDS = (process.env.TELEGRAM_CHAT_ID || '')
+	.split(',')
+	.map((id) => id.trim())
+	.filter(Boolean);
 
 exports.notifyOnRegistration = onDocumentCreated(
 	'registrations/{registrationId}',
@@ -34,30 +37,35 @@ exports.notifyOnRegistration = onDocumentCreated(
 		if (contactParts) message += `\nContact: ${contactParts}`;
 		if (location) message += `\nFrom: ${location}`;
 
-		// Placeholders not yet filled → log only (Phase 9 state).
-		if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-			logger.info(`[Telegram placeholder — not yet configured] Would send: ${message}`);
+		// Credentials not configured → log only (used before the bot is wired up).
+		if (!TELEGRAM_BOT_TOKEN || TELEGRAM_CHAT_IDS.length === 0) {
+			logger.info(`[Telegram not configured] Would send: ${message}`);
 			return;
 		}
 
-		// Real send (active once Phase 11 fills the credentials).
+		// Send to every configured recipient (admin + teacher).
 		const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-		try {
-			const res = await fetch(url, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
-			});
-			if (!res.ok) {
-				logger.error('Telegram API returned an error', {
-					status: res.status,
-					body: await res.text()
-				});
-			} else {
-				logger.info('Telegram notification sent', { message });
-			}
-		} catch (err) {
-			logger.error('Failed to send Telegram message', err);
-		}
+		await Promise.all(
+			TELEGRAM_CHAT_IDS.map(async (chatId) => {
+				try {
+					const res = await fetch(url, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ chat_id: chatId, text: message })
+					});
+					if (!res.ok) {
+						logger.error('Telegram API returned an error', {
+							chatId,
+							status: res.status,
+							body: await res.text()
+						});
+					} else {
+						logger.info('Telegram notification sent', { chatId });
+					}
+				} catch (err) {
+					logger.error('Failed to send Telegram message', { chatId, err });
+				}
+			})
+		);
 	}
 );
