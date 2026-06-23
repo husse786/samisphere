@@ -763,10 +763,17 @@ end-to-end. This is where the Telegram placeholders become real.
 > Telegram message delivered (confirmed in function logs). Trilingual UI + RTL
 > verified on the identical build locally.
 >
-> ⏳ **Remaining:** (a) optional live trilingual spot-check by the human;
-> (b) clean up test registrations from the live DB (Anna/Bob/Sascha/Leyla/
-> RulesLiveTest/Live Test — deletes need the teacher login or Firebase Console);
-> (c) hand off to Samira (add her chat ID, transfer ownership); (d) tag v1.
+**Update 2026-06-23 (later):** Notification handoff done — Samira's chat ID
+(`7652699241`, @disamrvn) added alongside the admin's in `TELEGRAM_CHAT_ID`;
+function redeployed. Confirmed live: a registration notifies **both** the admin
+and Samira. (Note: the two bots had near-identical names — `samisphere` vs
+`samsphere`; we standardized on the original `@samisphere_notify_bot` and both
+recipients message that one. The extra `@samsphere_notify_bot` is unused.)
+
+> ⏳ **Remaining:** (a) clean up test registrations from the live DB — the human
+> will do this themselves; (b) Samira to review RU/FA translations and redeploy
+> with `npm --prefix frontend run build && firebase deploy --only hosting`;
+> (c) transfer project ownership to Samira when ready; (d) tag v1.
 
 ---
 
