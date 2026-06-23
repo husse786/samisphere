@@ -19,9 +19,8 @@
 		justify-content: space-between;
 		gap: var(--space-3);
 		padding: var(--space-3) var(--space-4);
-		background: var(--color-surface);
-		border-bottom: 1px solid var(--color-border);
-		box-shadow: var(--shadow);
+		background: var(--color-dark-bg);
+		border-bottom: 1px solid var(--color-dark-border);
 	}
 	.wordmark {
 		font-size: 1.5rem;
@@ -33,9 +32,9 @@
 		text-decoration: none;
 	}
 	.sami {
-		color: var(--color-primary);
+		color: var(--color-brand-blue);
 	}
 	.sphere {
-		color: var(--color-accent);
+		color: var(--color-brand-cyan);
 	}
 </style>

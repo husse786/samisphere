@@ -5,12 +5,14 @@
 	import RegistrationForm from '$lib/components/student/RegistrationForm.svelte';
 </script>
 
-<h1>{$_('form.register')}</h1>
-<p class="subtitle">{$_('student.subtitle')}</p>
+<div class="container">
+	<h1>{$_('form.register')}</h1>
+	<p class="subtitle">{$_('student.subtitle')}</p>
 
-<RegistrationForm />
+	<RegistrationForm />
 
-<p class="nav"><a href="/">{$_('nav.toHome')}</a></p>
+	<p class="nav"><a href="/">{$_('nav.toHome')}</a></p>
+</div>
 
 <style>
 	.subtitle {

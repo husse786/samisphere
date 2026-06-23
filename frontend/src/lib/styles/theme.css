@@ -3,18 +3,27 @@
    in the root layout. */
 
 :root {
-	/* Colors */
-	--color-bg: #f5f6fa;
+	/* Colors — light app surfaces (forms, dashboard) */
+	--color-bg: #f5f7fb;
 	--color-surface: #ffffff;
 	--color-text: #1f2937;
 	--color-text-muted: #6b7280;
-	--color-primary: #4f46e5; /* indigo — "Sami" + primary actions */
-	--color-primary-hover: #4338ca;
-	--color-accent: #0d9488; /* teal — "Sphere" + highlights */
+	--color-primary: #2563eb; /* blue — primary actions */
+	--color-primary-hover: #1d4ed8;
+	--color-accent: #0891b2; /* cyan — "Sphere" + highlights */
 	--color-on-primary: #ffffff;
 	--color-border: #e5e7eb;
 	--color-danger: #dc2626;
-	--color-focus: #6366f1;
+	--color-focus: #3b82f6;
+
+	/* Dark, elegant surfaces — header + landing hero (black / blue / whitish) */
+	--color-dark-bg: #0a0f1e;
+	--color-dark-surface: #111a33;
+	--color-dark-text: #eef2fb;
+	--color-dark-muted: #9aa6c4;
+	--color-dark-border: rgba(255, 255, 255, 0.1);
+	--color-brand-blue: #3b82f6; /* "Sami" on dark */
+	--color-brand-cyan: #38bdf8; /* "Sphere" on dark */
 
 	/* Typography */
 	--font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
@@ -32,6 +41,14 @@
 	--radius: 8px;
 	--shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.06);
 	--container-width: 760px;
+}
+
+/* Centered page container for the app pages (form, dashboard). The landing
+   page opts out so its hero can go full-bleed. */
+.container {
+	max-width: var(--container-width);
+	margin: 0 auto;
+	padding: var(--space-6) var(--space-4);
 }
 
 /* Base / light reset */

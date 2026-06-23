@@ -35,16 +35,16 @@
 		border: 2px solid transparent;
 		border-radius: var(--radius);
 		background: none;
-		color: var(--color-text-muted);
+		color: var(--color-dark-muted);
 		cursor: pointer;
 		font: inherit;
 	}
 	.lang:hover {
-		background: var(--color-bg);
+		background: rgba(255, 255, 255, 0.06);
 	}
 	.lang.active {
-		border-color: var(--color-primary);
-		color: var(--color-primary);
+		border-color: var(--color-brand-cyan);
+		color: var(--color-dark-text);
 		font-weight: 700;
 	}
 	.flag {

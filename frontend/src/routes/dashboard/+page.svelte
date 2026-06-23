@@ -21,22 +21,24 @@
 	onMount(() => onAuthChange((u) => (user = u)));
 </script>
 
-<h1>{$_('dashboard.title')}</h1>
+<div class="container">
+	<h1>{$_('dashboard.title')}</h1>
 
-{#if user === undefined}
-	<p>{$_('common.loading')}</p>
-{:else if user === null}
-	<LoginForm />
-{:else}
-	<div class="signed-in">
-		<span>{$_('dashboard.signedInAs', { values: { email: user.email } })}</span>
-		<Button variant="secondary" onclick={signOutTeacher}>{$_('dashboard.logout')}</Button>
-	</div>
-	<CourseManager />
-	<RegistrationList />
-{/if}
+	{#if user === undefined}
+		<p>{$_('common.loading')}</p>
+	{:else if user === null}
+		<LoginForm />
+	{:else}
+		<div class="signed-in">
+			<span>{$_('dashboard.signedInAs', { values: { email: user.email } })}</span>
+			<Button variant="secondary" onclick={signOutTeacher}>{$_('dashboard.logout')}</Button>
+		</div>
+		<CourseManager />
+		<RegistrationList />
+	{/if}
 
-<p class="nav"><a href="/">{$_('nav.toStudent')}</a></p>
+	<p class="nav"><a href="/">{$_('nav.toHome')}</a></p>
+</div>
 
 <style>
 	.signed-in {

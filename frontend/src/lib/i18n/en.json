@@ -7,9 +7,11 @@
 		"loading": "Loading…"
 	},
 	"landing": {
-		"welcome": "Course registration, made simple.",
-		"intro": "Pick your language, choose a course and time, and register in just a few clicks. Samira takes care of the rest.",
-		"cta": "Register for a course"
+		"greeting": "Hi, I'm Samira 👋",
+		"headline": "Learn Russian or prepare for school — online.",
+		"intro": "Friendly one-on-one online sessions, built around you and your goals — from absolute beginner to advanced, everyday conversation to school preparation. Pick a course and register, and I'll personally reach out to arrange a time that fits you.",
+		"cta": "Register for a course",
+		"qrNote": "Or scan to register from your phone"
 	},
 	"student": {
 		"subtitle": "Fill in your details and choose a course below."

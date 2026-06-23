@@ -19,18 +19,10 @@
 
 <Header />
 
-<main class="container">
-	{#if $isLoading}
-		<p>…</p>
-	{:else}
-		{@render children()}
-	{/if}
-</main>
-
-<style>
-	.container {
-		max-width: var(--container-width);
-		margin: 0 auto;
-		padding: var(--space-6) var(--space-4);
-	}
-</style>
+<!-- Pages control their own width: app pages wrap in `.container`; the landing
+     page goes full-bleed for its dark hero. -->
+{#if $isLoading}
+	<p class="container">…</p>
+{:else}
+	{@render children()}
+{/if}
