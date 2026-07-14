@@ -5,7 +5,7 @@
 **Built for:** Samira (the teacher)
 **Document:** 01 — Architecture & Workflow
 **Status:** Approved
-**Last updated:** 2026-06-22
+**Last updated:** 2026-07-14
 
 ---
 
@@ -53,7 +53,9 @@ The whole system is built from three connected parts.
 
 - A welcoming **landing page** (`/`) with the SamiSphere wordmark, a short
   intro, and a call-to-action button to the registration form. *(Added in
-  Phase 10.5.)*
+  Phase 10.5.)* It also shows a **course showcase** — each available course
+  once, as name + price only (no times, links, or capacity), with a "Courses
+  coming soon" placeholder when none are priced. *(Added in Phase 12.)*
 - The **registration form** lives on its own page (`/register`).
 - Prominent, highly visible language switcher (🇬🇧 English / 🇷🇺 Russian / 🇮🇷 Persian).
 - Persian renders **right-to-left (RTL)**; English and Russian render left-to-right.
@@ -89,14 +91,20 @@ Each slot the teacher creates is stored with a status they can flip.
   time:        "Monday 10:00",
   status:      "available",   // teacher flips to "hidden" to remove from the form
   capacity:    20,            // optional — reserved for future auto-full feature
-  meetingLink: "https://meet.google.com/abc-defg-hij"
+  meetingLink: "https://meet.google.com/abc-defg-hij",
                               // optional (Phase 10.6) — static online-class URL
                               // the teacher attaches; may be empty/absent
+  price:       12.5,          // optional (Phase 12) — a number, decimals allowed
+  priceUnit:   "hour",        // optional — "hour" | "month"
+  currency:    "USD"          // optional — "RUB" | "USD"
 }
 ```
 
 - When `status` is `"available"` → the slot appears in the student dropdown.
 - When `status` is `"hidden"` → the slot is skipped and students never see it.
+- **Price is per course** (Phase 12): it is not expected to differ between time
+  slots of the same course. All three price fields are optional and absent on
+  legacy courses; the homepage showcase simply skips a course with no price.
 
 ### Registration
 
@@ -113,13 +121,16 @@ collect fuller student details — see doc 03.)
   country:   "Azerbaijan",
   course:    "Math 101",
   time:      "Monday 10:00",
+  comment:   "Prefer evenings, thanks!",  // optional (Phase 12) — ≤ 500 chars
   date:      "2026-06-22"
 }
 ```
 
 > Note: addresses are limited to **city + country** (no street). Early
 > registrations created before Phase 10.5 may instead have a single `name`
-> field; the dashboard and notification handle both shapes.
+> field; the dashboard and notification handle both shapes. The optional
+> `comment` (Phase 12) is a short student note (≤ 500 characters), stored only
+> when provided and shown in the dashboard + Telegram message when present.
 
 ---
 

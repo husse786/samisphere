@@ -1,22 +1,35 @@
 <!-- Clean list of all registrations for the teacher. Shows each student's
-     details and chosen course. Only rendered once the teacher is logged in. -->
+     details, chosen course, optional comment, and a Delete control. Only
+     rendered once the teacher is logged in. -->
 <script>
 	import { onMount } from 'svelte';
 	import { _ } from 'svelte-i18n';
-	import { getRegistrations } from '$lib/services/registrations.js';
+	import { getRegistrations, deleteRegistration } from '$lib/services/registrations.js';
+	import Button from '$lib/components/common/Button.svelte';
 
 	let registrations = $state(
-		/** @type {Array<{ id: string, firstName?: string, lastName?: string, name?: string, email?: string, phone?: string, city?: string, country?: string, course?: string, time?: string, date: string }>} */ ([])
+		/** @type {Array<{ id: string, firstName?: string, lastName?: string, name?: string, email?: string, phone?: string, city?: string, country?: string, course?: string, time?: string, comment?: string, date: string }>} */ ([])
 	);
 	let loading = $state(true);
 
+	async function load() {
+		registrations = await getRegistrations();
+	}
+
 	onMount(async () => {
 		try {
-			registrations = await getRegistrations();
+			await load();
 		} finally {
 			loading = false;
 		}
 	});
+
+	async function remove(/** @type {{ id: string }} */ r) {
+		// Irreversible → confirm first; cancelling does nothing (doc 03, Phase 12).
+		if (!confirm($_('registrations.confirmDelete'))) return;
+		await deleteRegistration(r.id);
+		await load();
+	}
 
 	// Full name from first+last, falling back to the legacy single `name` field.
 	function fullName(/** @type {{ firstName?: string, lastName?: string, name?: string }} */ r) {
@@ -47,7 +60,9 @@
 					<th>{$_('registrations.location')}</th>
 					<th>{$_('registrations.course')}</th>
 					<th>{$_('registrations.time')}</th>
+					<th>{$_('registrations.comment')}</th>
 					<th>{$_('registrations.date')}</th>
+					<th>{$_('registrations.actions')}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -59,7 +74,19 @@
 						<td>{location(r)}</td>
 						<td>{r.course ?? '—'}</td>
 						<td>{r.time ?? '—'}</td>
+						<td>
+							{#if r.comment}
+								<span class="comment">{r.comment}</span>
+							{:else}
+								<span class="muted">—</span>
+							{/if}
+						</td>
 						<td>{r.date}</td>
+						<td>
+							<Button variant="danger" onclick={() => remove(r)}>
+								{$_('registrations.delete')}
+							</Button>
+						</td>
 					</tr>
 				{/each}
 			</tbody>
@@ -73,6 +100,15 @@
 		overflow-x: auto;
 	}
 	table {
-		min-width: 640px;
+		min-width: 760px;
+	}
+	.comment {
+		display: inline-block;
+		max-width: 22ch;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+	.muted {
+		color: var(--color-text-muted);
 	}
 </style>

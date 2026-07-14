@@ -22,11 +22,19 @@ service cloud.firestore {
       // constrained to status == "available" (which the student form does), so
       // hidden slots never reach the public. The teacher may read everything.
       allow read: if resource.data.status == 'available' || isTeacher();
-      // Only the teacher may add / edit / hide. The optional `meetingLink`, when
-      // present, must be a string.
+      // Only the teacher may add / edit / hide. Optional fields, when present,
+      // must be well-typed: `meetingLink` a string; `price` a number;
+      // `priceUnit` one of hour/month; `currency` one of RUB/USD. Absent fields
+      // (old courses) stay valid.
       allow create, update: if isTeacher()
         && (!('meetingLink' in request.resource.data)
-          || request.resource.data.meetingLink is string);
+          || request.resource.data.meetingLink is string)
+        && (!('price' in request.resource.data)
+          || request.resource.data.price is number)
+        && (!('priceUnit' in request.resource.data)
+          || request.resource.data.priceUnit in ['hour', 'month'])
+        && (!('currency' in request.resource.data)
+          || request.resource.data.currency in ['RUB', 'USD']);
       allow delete: if isTeacher();
     }
 
@@ -41,7 +49,11 @@ service cloud.firestore {
         && request.resource.data.email is string
         && request.resource.data.email.size() > 0
         && request.resource.data.course is string
-        && request.resource.data.time is string;
+        && request.resource.data.time is string
+        // Optional comment: when present, a string of at most 500 characters.
+        && (!('comment' in request.resource.data)
+          || (request.resource.data.comment is string
+            && request.resource.data.comment.size() <= 500));
       // Only the teacher may read / edit / delete.
       allow read, update, delete: if isTeacher();
     }

@@ -31,6 +31,9 @@
 		"countryPlaceholder": "Ваша страна",
 		"course": "Курс",
 		"chooseCourse": "Выберите курс…",
+		"comment": "Комментарий (необязательно)",
+		"commentPlaceholder": "Хотите что-то сообщить Самире? (необязательно)",
+		"commentCounter": "{count} / 500",
 		"register": "Записаться",
 		"saving": "Сохранение…",
 		"saved": "Регистрация сохранена.",
@@ -64,7 +67,11 @@
 		"location": "Местоположение",
 		"course": "Курс",
 		"time": "Время",
-		"date": "Дата"
+		"comment": "Комментарий",
+		"date": "Дата",
+		"actions": "Действия",
+		"delete": "Удалить",
+		"confirmDelete": "Удалить эту регистрацию студента? Это действие необратимо."
 	},
 	"courses": {
 		"title": "Управление курсами",
@@ -81,11 +88,26 @@
 		"edit": "Изменить",
 		"save": "Сохранить",
 		"cancel": "Отмена",
+		"delete": "Удалить",
+		"confirmDelete": "Удалить этот курс? Это действие необратимо.",
 		"statusAvailable": "доступен",
 		"statusHidden": "скрыт",
 		"meetingLinkPlaceholder": "Ссылка на встречу (необязательно)",
 		"link": "Ссылка",
 		"startClass": "Начать урок",
-		"noLink": "Нет ссылки"
+		"noLink": "Нет ссылки",
+		"pricePlaceholder": "Цена (необязательно)",
+		"price": "Цена",
+		"noPrice": "Цена не указана",
+		"perHour": "за час",
+		"perMonth": "за месяц",
+		"unitHour": "час",
+		"unitMonth": "месяц",
+		"currencyRub": "₽ RUB",
+		"currencyUsd": "$ USD"
+	},
+	"showcase": {
+		"heading": "Доступные курсы",
+		"comingSoon": "Курсы скоро появятся"
 	}
 }

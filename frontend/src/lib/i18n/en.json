@@ -31,6 +31,9 @@
 		"countryPlaceholder": "Your country",
 		"course": "Course",
 		"chooseCourse": "Choose a course…",
+		"comment": "Comment (optional)",
+		"commentPlaceholder": "Anything you'd like Samira to know? (optional)",
+		"commentCounter": "{count} / 500",
 		"register": "Register",
 		"saving": "Saving…",
 		"saved": "Registration saved.",
@@ -64,7 +67,11 @@
 		"location": "Location",
 		"course": "Course",
 		"time": "Time",
-		"date": "Date"
+		"comment": "Comment",
+		"date": "Date",
+		"actions": "Actions",
+		"delete": "Delete",
+		"confirmDelete": "Delete this student's registration? This cannot be undone."
 	},
 	"courses": {
 		"title": "Manage courses",
@@ -81,11 +88,26 @@
 		"edit": "Edit",
 		"save": "Save",
 		"cancel": "Cancel",
+		"delete": "Delete",
+		"confirmDelete": "Delete this course? This cannot be undone.",
 		"statusAvailable": "available",
 		"statusHidden": "hidden",
 		"meetingLinkPlaceholder": "Meeting link (optional)",
 		"link": "Link",
 		"startClass": "Start class",
-		"noLink": "No link"
+		"noLink": "No link",
+		"pricePlaceholder": "Price (optional)",
+		"price": "Price",
+		"noPrice": "No price set",
+		"perHour": "per hour",
+		"perMonth": "per month",
+		"unitHour": "hour",
+		"unitMonth": "month",
+		"currencyRub": "₽ RUB",
+		"currencyUsd": "$ USD"
+	},
+	"showcase": {
+		"heading": "Courses on offer",
+		"comingSoon": "Courses coming soon"
 	}
 }

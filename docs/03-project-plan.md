@@ -5,7 +5,7 @@
 **Built for:** Samira (the teacher)
 **Document:** 03 — Project Plan
 **Status:** Approved
-**Last updated:** 2026-06-22
+**Last updated:** 2026-07-14
 
 ---
 
@@ -804,6 +804,122 @@ recipients message that one. The extra `@samsphere_notify_bot` is unused.)
 > will do this themselves; (b) Samira to review RU/FA translations and redeploy
 > with `npm --prefix frontend run build && firebase deploy --only hosting`;
 > (c) transfer project ownership to Samira when ready; (d) tag v1.
+
+---
+
+## Phase 12 — v1.1 (course price, homepage showcase, comment field, delete)
+
+**Goal:** A post-v1 feature round requested by the human. Four features + docs,
+each a vertical slice: course **price**, a homepage **course showcase**, an
+optional registration **comment**, and **delete** for courses and registrations.
+Full spec: `phase-12-v1.1.md` (approved 2026-07-14).
+
+### Task 12.1 — Extend the course shape with price fields
+- **Done when:** `services/courses.js` shape + JSDoc document the optional
+  `price` (number), `priceUnit` (`hour`/`month`), `currency` (`RUB`/`USD`);
+  `addCourse()` persists them only with a valid price; `updateCourse()` can
+  set/change them; old price-less courses are unaffected.
+
+### Task 12.2 — Course price UI in the dashboard (`CourseManager.svelte`)
+- **Done when:** the add-form and inline edit have price + period + currency
+  controls; the table shows a formatted price (symbol + 2 decimals + / period)
+  or a muted "No price set"; all text is from i18n; shared `Button` + theme
+  tokens only.
+
+### Task 12.3 — Homepage course showcase (`/` + `services/courses.js`)
+- **Done when:** `getShowcaseCourses()` builds on `getAvailableCourses()` (never
+  reads hidden data), groups by course name (first wins — accepted limitation),
+  and excludes price-less courses; the homepage renders a themed, responsive,
+  trilingual + RTL section of name + price only, with a "Courses coming soon"
+  placeholder and readable while logged out.
+
+### Task 12.4 — Registration comment field (`/register` + service + function)
+- **Done when:** an optional 500-char comment with a live `0 / 500` counter
+  (hard-stopped) is on the form; `createRegistration()` stores it only when
+  non-empty; `RegistrationList` shows it when present (legacy-safe); the Telegram
+  message adds a `Comment:` line only when provided.
+
+### Task 12.5 — Update the three translation files (en / ru / fa)
+- **Done when:** every new string is keyed in all three files; English complete;
+  RU/FA agent translations flagged for Samira's review; no hard-coded English
+  left in touched components.
+
+### Task 12.6 — Delete: courses and registrations (dashboard)
+- **Done when:** `deleteCourse(id)` + `deleteRegistration(id)` exist; each list
+  has a per-row **Delete** (danger variant) behind a confirmation; the list
+  refreshes after; the agent did not mass-delete real live data (test docs only).
+
+### Task 12.7 — Update `firestore.rules` for the new fields, then redeploy
+- **Done when:** course create/update validates optional `price` (number),
+  `priceUnit` (`hour`/`month`), `currency` (`RUB`/`USD`); registration create
+  validates optional `comment` (string ≤ 500); delete permissions unchanged;
+  emulator tests extended and passing. **Live deploy is a human-confirmed step.**
+
+### Task 12.8 — Update the documentation (required)
+- **Done when:** `01-architecture.md` (shapes + showcase), this plan,
+  `README.md`, and the service shape comments all match reality.
+
+### ✅ Phase 12 Checklist
+**A — Course price**
+- [x] `services/courses.js` shape + JSDoc include `price` / `priceUnit` / `currency`
+- [x] `addCourse()` and `updateCourse()` persist all three; old courses unaffected
+- [x] Dashboard add-form has price (decimals) + period (hour/month) + currency (₽/$)
+- [x] Dashboard inline-edit can set/change all three (incl. adding to an old course)
+- [x] Course table shows formatted price (symbol + 2 decimals + / period); "No price set" when absent
+
+**B — Homepage showcase**
+- [x] Homepage section lists each unique course once: name + formatted price only
+- [x] No time / meeting link / capacity shown; hidden courses excluded; price-less excluded
+- [x] "Courses coming soon" placeholder when no available priced courses
+- [x] Themed, responsive, correct in EN/RU/FA + RTL; readable while logged out
+
+**C — Comment field**
+- [x] Optional comment on `/register`, 500-char hard limit, live `0 / 500` counter
+- [x] `createRegistration()` stores `comment` when non-empty (JSDoc updated)
+- [x] Dashboard list shows the comment when present (legacy records don't break)
+- [x] Telegram message includes the comment line only when provided
+
+**D — Delete**
+- [x] `deleteCourse(id)` + `deleteRegistration(id)` in the services
+- [x] Per-row Delete in `CourseManager` and `RegistrationList` (danger variant)
+- [x] Confirmation required before every delete; cancel does nothing; list refreshes after
+- [x] Agent did NOT mass-delete real live data (built + tested on test docs only)
+
+**E — Rules, i18n, docs**
+- [x] All new strings keyed in en/ru/fa; no hard-coded English left; RU/FA review flagged
+- [x] `firestore.rules` validates new course fields + optional comment (≤500); delete perms unchanged
+- [x] Emulator rules tests extended and passing (20/20)
+- [ ] Rule/hosting/function deploy handled as a human-confirmed step (not deployed unilaterally)
+- [x] `01-architecture.md`, `03-project-plan.md`, `README.md`, and service shape comments updated
+- [~] `npm --prefix frontend run check` clean; committed and pushed; tagged `v1.1.0` when live
+
+> **Phase 12 built 2026-07-14 (awaiting live deploy).** All four features
+> implemented against the existing architecture: price fields (`price` /
+> `priceUnit` / `currency`) added to the course shape and service, with add-form
+> + inline-edit controls and a formatted-price column in `CourseManager`; a
+> homepage **course showcase** (`getShowcaseCourses()` — grouped by name, priced
+> only, hidden excluded) with a "Courses coming soon" placeholder; an optional
+> 500-char **comment** with a live counter on `/register`, stored + shown in the
+> dashboard and Telegram message; and **delete** for courses and registrations
+> (danger button + `confirm()`), refreshing the list after. `firestore.rules`
+> now validates the new fields (course price/unit/currency, comment ≤ 500);
+> **20/20** emulator tests pass via a new `tests/` harness
+> (`@firebase/rules-unit-testing`, run with `npm --prefix tests test`).
+> `npm --prefix frontend run check` is clean (0 errors). New UI verified locally
+> (dev server): homepage showcase + placeholder in EN and Persian/RTL, and the
+> comment field + live `0/500` counter + 500-char cap.
+>
+> ⏳ **Remaining (human steps):** (a) **deploy** rules + hosting + functions and
+> then **tag `v1.1.0`** — not done unilaterally (see Task 12.7); commands below.
+> (b) Samira to review the new **RU/FA** strings (carried over from Phase 7 /
+> 10.5 — still open). (c) Live-data cleanup of old test courses/registrations is
+> now doable via the new Delete button, left to the human. (d) Live dashboard
+> spot-check of the price/delete UI (behind login) welcome.
+>
+> **Deploy commands (run after confirming the Firebase CLI is authenticated):**
+> `firebase deploy --only firestore:rules` (rules),
+> `npm --prefix frontend run build && firebase deploy --only hosting` (site),
+> `firebase deploy --only functions` (Telegram comment line).
 
 ---
 

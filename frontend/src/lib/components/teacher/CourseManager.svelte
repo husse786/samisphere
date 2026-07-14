@@ -1,5 +1,7 @@
-<!-- Teacher course management: add a course/slot, edit it, and toggle each one
-     on/off. Hiding a slot removes it from the student dropdown (doc 01 §6). -->
+<!-- Teacher course management: add a course/slot, edit it, toggle each one
+     on/off, and delete it. Hiding a slot removes it from the student dropdown
+     (doc 01 §6). Each course can carry an optional price + period + currency
+     (Phase 12). -->
 <script>
 	import { onMount } from 'svelte';
 	import { _ } from 'svelte-i18n';
@@ -7,12 +9,14 @@
 		getAllCourses,
 		addCourse,
 		updateCourse,
-		setCourseStatus
+		setCourseStatus,
+		deleteCourse,
+		formatMoney
 	} from '$lib/services/courses.js';
 	import Button from '$lib/components/common/Button.svelte';
 
 	let courses = $state(
-		/** @type {Array<{ id: string, course: string, time: string, status: string, capacity?: number, meetingLink?: string }>} */ ([])
+		/** @type {Array<{ id: string, course: string, time: string, status: string, capacity?: number, meetingLink?: string, price?: number, priceUnit?: string, currency?: string }>} */ ([])
 	);
 	let loading = $state(true);
 
@@ -20,12 +24,39 @@
 	let newCourse = $state('');
 	let newTime = $state('');
 	let newMeetingLink = $state('');
+	let newPrice = $state('');
+	let newPriceUnit = $state('hour');
+	let newCurrency = $state('RUB');
 
 	// Inline edit state.
 	let editingId = $state(/** @type {string | null} */ (null));
 	let editCourse = $state('');
 	let editTime = $state('');
 	let editMeetingLink = $state('');
+	let editPrice = $state('');
+	let editPriceUnit = $state('hour');
+	let editCurrency = $state('RUB');
+
+	// Parse a price input into a number, or undefined when blank/invalid.
+	function parsePrice(/** @type {string} */ v) {
+		const t = String(v ?? '').trim();
+		if (t === '') return undefined;
+		const n = Number(t);
+		return Number.isNaN(n) ? undefined : n;
+	}
+
+	// Translated billing-period word shown after the price ("/ hour", "/ month").
+	function unitLabel(/** @type {string | undefined} */ unit) {
+		return unit === 'month' ? $_('courses.unitMonth') : $_('courses.unitHour');
+	}
+
+	// Full formatted price for the table, e.g. "$12.50 / hour", or null.
+	function priceLabel(
+		/** @type {{ price?: number, priceUnit?: string, currency?: string }} */ c
+	) {
+		const money = formatMoney(c);
+		return money ? `${money} / ${unitLabel(c.priceUnit)}` : null;
+	}
 
 	async function load() {
 		courses = await getAllCourses();
@@ -45,11 +76,17 @@
 		await addCourse({
 			course: newCourse.trim(),
 			time: newTime.trim(),
-			meetingLink: newMeetingLink.trim()
+			meetingLink: newMeetingLink.trim(),
+			price: parsePrice(newPrice),
+			priceUnit: newPriceUnit,
+			currency: newCurrency
 		});
 		newCourse = '';
 		newTime = '';
 		newMeetingLink = '';
+		newPrice = '';
+		newPriceUnit = 'hour';
+		newCurrency = 'RUB';
 		await load();
 	}
 
@@ -58,13 +95,23 @@
 		await load();
 	}
 
+	async function remove(/** @type {{ id: string }} */ c) {
+		// Irreversible → confirm first; cancelling does nothing (doc 03, Phase 12).
+		if (!confirm($_('courses.confirmDelete'))) return;
+		await deleteCourse(c.id);
+		await load();
+	}
+
 	function startEdit(
-		/** @type {{ id: string, course: string, time: string, meetingLink?: string }} */ c
+		/** @type {{ id: string, course: string, time: string, meetingLink?: string, price?: number, priceUnit?: string, currency?: string }} */ c
 	) {
 		editingId = c.id;
 		editCourse = c.course;
 		editTime = c.time;
 		editMeetingLink = c.meetingLink ?? '';
+		editPrice = typeof c.price === 'number' ? String(c.price) : '';
+		editPriceUnit = c.priceUnit ?? 'hour';
+		editCurrency = c.currency ?? 'RUB';
 	}
 
 	function cancelEdit() {
@@ -73,11 +120,21 @@
 
 	async function saveEdit(/** @type {string} */ id) {
 		if (!editCourse.trim() || !editTime.trim()) return;
-		await updateCourse(id, {
+		/** @type {{ course: string, time: string, meetingLink: string, price?: number, priceUnit?: string, currency?: string }} */
+		const fields = {
 			course: editCourse.trim(),
 			time: editTime.trim(),
 			meetingLink: editMeetingLink.trim() // empty string clears the link
-		});
+		};
+		const priceNum = parsePrice(editPrice);
+		if (priceNum !== undefined) {
+			// Only send price when set — Firestore rejects undefined values, and a
+			// blank field leaves any existing price untouched.
+			fields.price = priceNum;
+			fields.priceUnit = editPriceUnit;
+			fields.currency = editCurrency;
+		}
+		await updateCourse(id, fields);
 		editingId = null;
 		await load();
 	}
@@ -93,6 +150,21 @@
 		placeholder={$_('courses.meetingLinkPlaceholder')}
 		type="url"
 	/>
+	<input
+		bind:value={newPrice}
+		placeholder={$_('courses.pricePlaceholder')}
+		type="number"
+		step="0.01"
+		min="0"
+	/>
+	<select bind:value={newPriceUnit} aria-label={$_('courses.price')}>
+		<option value="hour">{$_('courses.perHour')}</option>
+		<option value="month">{$_('courses.perMonth')}</option>
+	</select>
+	<select bind:value={newCurrency} aria-label={$_('courses.price')}>
+		<option value="RUB">{$_('courses.currencyRub')}</option>
+		<option value="USD">{$_('courses.currencyUsd')}</option>
+	</select>
 	<Button type="submit">{$_('courses.add')}</Button>
 </form>
 
@@ -107,6 +179,7 @@
 			<tr>
 				<th>{$_('courses.course')}</th>
 				<th>{$_('courses.time')}</th>
+				<th>{$_('courses.price')}</th>
 				<th>{$_('courses.status')}</th>
 				<th>{$_('courses.link')}</th>
 					<th>{$_('courses.actions')}</th>
@@ -118,6 +191,25 @@
 					{#if editingId === c.id}
 						<td><input bind:value={editCourse} /></td>
 						<td><input bind:value={editTime} /></td>
+						<td>
+							<div class="price-edit">
+								<input
+									bind:value={editPrice}
+									placeholder={$_('courses.pricePlaceholder')}
+									type="number"
+									step="0.01"
+									min="0"
+								/>
+								<select bind:value={editPriceUnit} aria-label={$_('courses.price')}>
+									<option value="hour">{$_('courses.perHour')}</option>
+									<option value="month">{$_('courses.perMonth')}</option>
+								</select>
+								<select bind:value={editCurrency} aria-label={$_('courses.price')}>
+									<option value="RUB">{$_('courses.currencyRub')}</option>
+									<option value="USD">{$_('courses.currencyUsd')}</option>
+								</select>
+							</div>
+						</td>
 						<td>{c.status === 'available' ? $_('courses.statusAvailable') : $_('courses.statusHidden')}</td>
 						<td>
 							<input
@@ -133,6 +225,13 @@
 					{:else}
 						<td>{c.course}</td>
 						<td>{c.time}</td>
+						<td>
+							{#if priceLabel(c)}
+								<span class="price">{priceLabel(c)}</span>
+							{:else}
+								<span class="muted">{$_('courses.noPrice')}</span>
+							{/if}
+						</td>
 						<td>
 							<span class="badge" class:hidden={c.status !== 'available'}>
 								{c.status === 'available' ? $_('courses.statusAvailable') : $_('courses.statusHidden')}
@@ -153,6 +252,7 @@
 								{c.status === 'available' ? $_('courses.hide') : $_('courses.show')}
 							</Button>
 							<Button variant="secondary" onclick={() => startEdit(c)}>{$_('courses.edit')}</Button>
+							<Button variant="danger" onclick={() => remove(c)}>{$_('courses.delete')}</Button>
 						</td>
 					{/if}
 				</tr>
@@ -167,7 +267,7 @@
 		overflow-x: auto;
 	}
 	.table-scroll table {
-		min-width: 720px;
+		min-width: 820px;
 	}
 	.add-form {
 		display: flex;
@@ -177,6 +277,21 @@
 	}
 	.add-form input {
 		flex: 1 1 12rem;
+	}
+	.add-form input[type='number'] {
+		flex: 1 1 7rem;
+	}
+	.price-edit {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1);
+	}
+	.price-edit input[type='number'] {
+		width: 6rem;
+	}
+	.price {
+		white-space: nowrap;
+		font-weight: 600;
 	}
 	.actions {
 		display: flex;

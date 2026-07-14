@@ -31,6 +31,9 @@
 		"countryPlaceholder": "کشور شما",
 		"course": "دوره",
 		"chooseCourse": "یک دوره انتخاب کنید…",
+		"comment": "توضیحات (اختیاری)",
+		"commentPlaceholder": "نکته‌ای هست که بخواهید سامیرا بداند؟ (اختیاری)",
+		"commentCounter": "{count} / 500",
 		"register": "ثبت‌نام",
 		"saving": "در حال ذخیره…",
 		"saved": "ثبت‌نام ذخیره شد.",
@@ -64,7 +67,11 @@
 		"location": "موقعیت",
 		"course": "دوره",
 		"time": "زمان",
-		"date": "تاریخ"
+		"comment": "توضیحات",
+		"date": "تاریخ",
+		"actions": "عملیات",
+		"delete": "حذف",
+		"confirmDelete": "این ثبت‌نام دانش‌آموز حذف شود؟ این عمل قابل بازگشت نیست."
 	},
 	"courses": {
 		"title": "مدیریت دوره‌ها",
@@ -81,11 +88,26 @@
 		"edit": "ویرایش",
 		"save": "ذخیره",
 		"cancel": "لغو",
+		"delete": "حذف",
+		"confirmDelete": "این دوره حذف شود؟ این عمل قابل بازگشت نیست.",
 		"statusAvailable": "در دسترس",
 		"statusHidden": "پنهان",
 		"meetingLinkPlaceholder": "لینک جلسه (اختیاری)",
 		"link": "لینک",
 		"startClass": "شروع کلاس",
-		"noLink": "بدون لینک"
+		"noLink": "بدون لینک",
+		"pricePlaceholder": "قیمت (اختیاری)",
+		"price": "قیمت",
+		"noPrice": "قیمتی تعیین نشده",
+		"perHour": "در ساعت",
+		"perMonth": "در ماه",
+		"unitHour": "ساعت",
+		"unitMonth": "ماه",
+		"currencyRub": "₽ RUB",
+		"currencyUsd": "$ USD"
+	},
+	"showcase": {
+		"heading": "دوره‌های ارائه‌شده",
+		"comingSoon": "دوره‌ها به‌زودی"
 	}
 }

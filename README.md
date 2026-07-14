@@ -13,10 +13,12 @@ course sign-ups.
 
 ## What it does
 
-- **Students** pick their language, choose an available course and time slot from
-  a dropdown, and register in a few clicks.
-- **The teacher** logs into a private dashboard to add courses, open or close
-  time slots, and see everyone who has registered.
+- **Students** pick their language, browse the courses on offer with their prices
+  on the homepage, choose an available course and time slot from a dropdown, and
+  register in a few clicks — with an optional comment for the teacher.
+- **The teacher** logs into a private dashboard to add courses (with a price per
+  hour or month), open or close time slots, delete a course or a registration,
+  and see everyone who has registered.
 - **Notifications** arrive on Telegram automatically whenever a new student signs
   up — no need to keep checking the site.
 - **Three languages** out of the box: English, Russian, and Persian (with proper

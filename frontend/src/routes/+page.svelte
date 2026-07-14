@@ -4,7 +4,38 @@
      dot grid give it depth. The QR encodes /register — regenerate with:
      npx qrcode -o static/register-qr.svg -t svg "<url>/register" -->
 <script>
+	import { onMount } from 'svelte';
 	import { _ } from 'svelte-i18n';
+	import { getShowcaseCourses, formatMoney } from '$lib/services/courses.js';
+
+	// Homepage course showcase (Phase 12): each unique available course shown
+	// once as name + price only — no times, links, or capacity. Priced courses
+	// only; a placeholder shows when there are none. Reads public "available"
+	// data only, so it works for a logged-out visitor.
+	let showcase = $state(
+		/** @type {Array<{ course: string, price: number, priceUnit?: string, currency?: string }>} */ ([])
+	);
+	let showcaseLoaded = $state(false);
+
+	onMount(async () => {
+		try {
+			showcase = await getShowcaseCourses();
+		} catch (err) {
+			console.error('Failed to load course showcase:', err);
+		} finally {
+			showcaseLoaded = true;
+		}
+	});
+
+	// "$12.50 / hour" — money from the service, period word translated here.
+	function priceLabel(
+		/** @type {{ price?: number, priceUnit?: string, currency?: string }} */ c
+	) {
+		const money = formatMoney(c);
+		if (!money) return '';
+		const unit = c.priceUnit === 'month' ? $_('courses.unitMonth') : $_('courses.unitHour');
+		return `${money} / ${unit}`;
+	}
 </script>
 
 <section class="hero">
@@ -31,6 +62,26 @@
 			<img class="qr" src="/register-qr.svg" alt={$_('landing.qrNote')} width="200" height="200" />
 			<p class="qr-note">{$_('landing.qrNote')}</p>
 		</aside>
+	</div>
+</section>
+
+<!-- Course showcase — marketing list of what's on offer (name + price only). -->
+<section class="showcase">
+	<div class="showcase-inner">
+		<h2 class="showcase-heading">{$_('showcase.heading')}</h2>
+
+		{#if showcaseLoaded && showcase.length > 0}
+			<ul class="course-grid">
+				{#each showcase as c (c.course)}
+					<li class="course-card">
+						<span class="course-name">{c.course}</span>
+						<span class="course-price">{priceLabel(c)}</span>
+					</li>
+				{/each}
+			</ul>
+		{:else if showcaseLoaded}
+			<p class="coming-soon">{$_('showcase.comingSoon')}</p>
+		{/if}
 	</div>
 </section>
 
@@ -227,5 +278,63 @@
 		50% {
 			transform: translate(-20px, 20px);
 		}
+	}
+
+	/* Course showcase — sits below the hero on the light app background. */
+	.showcase {
+		background: var(--color-bg);
+		padding: clamp(var(--space-8), 6vw, 4rem) var(--space-4);
+	}
+	.showcase-inner {
+		max-width: 1000px;
+		margin: 0 auto;
+		text-align: center;
+	}
+	.showcase-heading {
+		font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		margin: 0 0 var(--space-6);
+		color: var(--color-text);
+	}
+	.course-grid {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+		gap: var(--space-4);
+	}
+	.course-card {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+		padding: var(--space-6);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-top: 3px solid var(--color-primary);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
+		text-align: start;
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+	.course-card:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+	}
+	.course-name {
+		font-size: 1.2rem;
+		font-weight: 700;
+		color: var(--color-text);
+	}
+	.course-price {
+		font-size: 1.05rem;
+		font-weight: 700;
+		color: var(--color-accent);
+	}
+	.coming-soon {
+		font-size: 1.1rem;
+		color: var(--color-text-muted);
+		padding: var(--space-8) 0;
 	}
 </style>

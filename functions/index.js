@@ -32,10 +32,12 @@ exports.notifyOnRegistration = onDocumentCreated(
 		const time = data.time || '—';
 		const contactParts = [data.email, data.phone].filter(Boolean).join(' · ');
 		const location = [data.city, data.country].filter(Boolean).join(', ');
+		const comment = typeof data.comment === 'string' ? data.comment.trim() : '';
 
 		let message = `New registration: ${fullName} signed up for ${course} — ${time}.`;
 		if (contactParts) message += `\nContact: ${contactParts}`;
 		if (location) message += `\nFrom: ${location}`;
+		if (comment) message += `\nComment: ${comment}`;
 
 		// Credentials not configured → log only (used before the bot is wired up).
 		if (!TELEGRAM_BOT_TOKEN || TELEGRAM_CHAT_IDS.length === 0) {

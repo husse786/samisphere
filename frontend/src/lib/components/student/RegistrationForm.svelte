@@ -16,10 +16,13 @@
 	let phone = $state('');
 	let city = $state('');
 	let country = $state('');
+	let comment = $state('');
 	let selectedCourse = $state(
 		/** @type {{ course: string, time: string } | null} */ (null)
 	);
 	let status = $state('idle'); // 'idle' | 'incomplete' | 'invalidEmail' | 'saving' | 'saved' | 'error'
+
+	const COMMENT_MAX = 500;
 
 	const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -53,7 +56,8 @@
 				city: city.trim(),
 				country: country.trim(),
 				course: selectedCourse.course,
-				time: selectedCourse.time
+				time: selectedCourse.time,
+				comment: comment.trim()
 			});
 			firstName = '';
 			lastName = '';
@@ -61,6 +65,7 @@
 			phone = '';
 			city = '';
 			country = '';
+			comment = '';
 			status = 'saved';
 			onsaved?.();
 		} catch (err) {
@@ -116,6 +121,19 @@
 
 	<CourseDropdown bind:selected={selectedCourse} />
 
+	<label class="comment-field">
+		{$_('form.comment')}
+		<textarea
+			bind:value={comment}
+			maxlength={COMMENT_MAX}
+			rows="3"
+			placeholder={$_('form.commentPlaceholder')}
+		></textarea>
+		<span class="counter">
+			{$_('form.commentCounter', { values: { count: comment.length } })}
+		</span>
+	</label>
+
 	<Button type="submit" disabled={status === 'saving'}>
 		{status === 'saving' ? $_('form.saving') : $_('form.register')}
 	</Button>
@@ -168,8 +186,28 @@
 	.reg-form :global(label),
 	.reg-form :global(input),
 	.reg-form :global(select),
+	.reg-form :global(textarea),
 	.reg-form :global(.btn) {
 		width: 100%;
+	}
+	.reg-form :global(textarea) {
+		font: inherit;
+		color: var(--color-text);
+		background: var(--color-surface);
+		padding: var(--space-2) var(--space-3);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		resize: vertical;
+	}
+	.reg-form :global(textarea:focus) {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 1px;
+		border-color: var(--color-focus);
+	}
+	.counter {
+		align-self: flex-end;
+		font-size: 0.8rem;
+		color: var(--color-text-muted);
 	}
 	.msg {
 		margin-top: var(--space-4);
