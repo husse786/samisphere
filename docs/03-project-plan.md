@@ -889,11 +889,11 @@ Full spec: `phase-12-v1.1.md` (approved 2026-07-14).
 - [x] All new strings keyed in en/ru/fa; no hard-coded English left; RU/FA review flagged
 - [x] `firestore.rules` validates new course fields + optional comment (≤500); delete perms unchanged
 - [x] Emulator rules tests extended and passing (20/20)
-- [ ] Rule/hosting/function deploy handled as a human-confirmed step (not deployed unilaterally)
+- [x] Rule/hosting/function deploy handled as a human-confirmed step (not deployed unilaterally)
 - [x] `01-architecture.md`, `03-project-plan.md`, `README.md`, and service shape comments updated
-- [~] `npm --prefix frontend run check` clean; committed and pushed; tagged `v1.1.0` when live
+- [x] `npm --prefix frontend run check` clean; committed and pushed; tagged `v1.1.0` when live
 
-> **Phase 12 built 2026-07-14 (awaiting live deploy).** All four features
+> **Phase 12 complete 2026-07-14.** All four features
 > implemented against the existing architecture: price fields (`price` /
 > `priceUnit` / `currency`) added to the course shape and service, with add-form
 > + inline-edit controls and a formatted-price column in `CourseManager`; a
@@ -909,17 +909,18 @@ Full spec: `phase-12-v1.1.md` (approved 2026-07-14).
 > (dev server): homepage showcase + placeholder in EN and Persian/RTL, and the
 > comment field + live `0/500` counter + 500-char cap.
 >
-> ⏳ **Remaining (human steps):** (a) **deploy** rules + hosting + functions and
-> then **tag `v1.1.0`** — not done unilaterally (see Task 12.7); commands below.
-> (b) Samira to review the new **RU/FA** strings (carried over from Phase 7 /
-> 10.5 — still open). (c) Live-data cleanup of old test courses/registrations is
-> now doable via the new Delete button, left to the human. (d) Live dashboard
-> spot-check of the price/delete UI (behind login) welcome.
+> **Deployed 2026-07-14 (human-confirmed):** `firebase deploy --only
+> firestore:rules` (rules), `npm --prefix frontend run build && firebase deploy
+> --only hosting` (site → https://samisphere-82309.web.app), and `firebase deploy
+> --only functions` (`notifyOnRegistration`, me-central1). Committed + pushed to
+> `main` and tagged **`v1.1.0`**.
 >
-> **Deploy commands (run after confirming the Firebase CLI is authenticated):**
-> `firebase deploy --only firestore:rules` (rules),
-> `npm --prefix frontend run build && firebase deploy --only hosting` (site),
-> `firebase deploy --only functions` (Telegram comment line).
+> ⏳ **Remaining (human steps):** (a) Samira to review the new **RU/FA** strings
+> (carried over from Phase 7 / 10.5 — still open). (b) Live-data cleanup of old
+> test courses/registrations is now doable via the new Delete button, left to the
+> human. (c) Live dashboard spot-check of the price/delete UI (behind login)
+> welcome — add a price to a course and confirm it appears on the homepage
+> showcase.
 
 ---
 
