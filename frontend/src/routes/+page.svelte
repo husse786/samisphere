@@ -193,13 +193,13 @@
 		position: relative;
 		z-index: 1;
 		width: 100%;
-		max-width: 1200px;
+		max-width: min(1680px, 94vw);
 		margin: 0 auto;
-		padding: clamp(var(--space-8), 6vh, 4.5rem) clamp(var(--space-6), 4vw, 3.5rem);
+		padding: clamp(var(--space-8), 6vh, 4.5rem) clamp(var(--space-6), 3vw, var(--space-8));
 		display: grid;
-		grid-template-columns: 1.05fr 0.95fr;
+		grid-template-columns: 1.15fr 0.85fr;
 		align-items: center;
-		gap: clamp(var(--space-8), 5vw, 4rem);
+		gap: clamp(var(--space-8), 4vw, 3.5rem);
 	}
 
 	.wordmark {
@@ -223,12 +223,12 @@
 		margin: 0 0 var(--space-2);
 	}
 	.headline {
-		font-size: clamp(1.9rem, 4.4vw, 3rem);
+		font-size: clamp(1.5rem, 2.3vw, 2.05rem);
 		font-weight: 800;
-		line-height: 1.12;
+		line-height: 1.2;
 		letter-spacing: -0.02em;
 		margin: 0 0 var(--space-4);
-		max-width: 22ch;
+		max-width: 34ch;
 		color: var(--color-dark-text);
 	}
 	.intro {
@@ -236,7 +236,7 @@
 		line-height: 1.7;
 		color: var(--color-dark-muted);
 		margin: 0 0 var(--space-6);
-		max-width: 50ch;
+		max-width: 56ch;
 	}
 
 	.actions {
@@ -307,9 +307,9 @@
 
 	/* ── Course deck ─────────────────────────────────────────────────────── */
 	.deck-wrap {
-		justify-self: center;
+		justify-self: end;
 		width: 100%;
-		max-width: 380px;
+		max-width: 440px;
 	}
 	.deck-label {
 		margin: 0 0 var(--space-4);
@@ -345,7 +345,10 @@
 		/* Deal each card down and back, scaled + faded by its stack position. */
 		transform: translateY(calc(var(--rel) * 16px)) scale(calc(1 - var(--rel) * 0.05));
 		opacity: calc(1 - var(--rel) * 0.28);
-		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;
+		/* Only the position glides; opacity is instant so the incoming top card is
+		   fully opaque the moment it takes the top z-index — it covers the cards
+		   sliding behind it, so nothing ever ghosts through during the shuffle. */
+		transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 	}
 	/* Cards deeper than the third are hidden behind the stack. */
 	.deal-card:not(.top) {
