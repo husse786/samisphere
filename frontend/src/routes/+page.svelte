@@ -101,6 +101,7 @@
 							style="--rel:{rel(i)}; z-index:{showcase.length - rel(i)};"
 						>
 							<span class="deal-name">{c.course}</span>
+							<span class="deal-divider" aria-hidden="true"></span>
 							<span class="deal-price">{priceLabel(c)}</span>
 							<span class="deal-shine" aria-hidden="true"></span>
 						</article>
@@ -370,12 +371,19 @@
 		font-size: 1.6rem;
 		font-weight: 800;
 		letter-spacing: -0.01em;
-		color: var(--color-dark-text);
+		color: var(--color-brand-cyan);
+	}
+	/* Short accent rule separating the name from its price. */
+	.deal-divider {
+		width: 48px;
+		height: 2px;
+		border-radius: 999px;
+		background: rgba(56, 189, 248, 0.5);
 	}
 	.deal-price {
 		font-size: 1.2rem;
 		font-weight: 700;
-		color: #fff;
+		color: var(--color-dark-muted);
 	}
 	/* A diagonal gloss that sits over the card face. */
 	.deal-shine {
