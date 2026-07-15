@@ -16,9 +16,13 @@ course sign-ups.
 - **Students** pick their language, browse the courses on offer with their prices
   on the homepage, choose an available course and time slot from a dropdown, and
   register in a few clicks — with an optional comment for the teacher.
+- **A student dashboard** gives each student their own page: they log in and see
+  every course they registered for, whether they've paid, the class time, and a
+  button to join the class. The teacher creates their login with one click and
+  sends them the password; students never sign themselves up.
 - **The teacher** logs into a private dashboard to add courses (with a price per
   hour or month), open or close time slots, delete a course or a registration,
-  and see everyone who has registered.
+  mark a registration paid or unpaid, and see everyone who has registered.
 - **Notifications** arrive on Telegram automatically whenever a new student signs
   up — no need to keep checking the site.
 - **Three languages** out of the box: English, Russian, and Persian (with proper
@@ -33,6 +37,7 @@ course sign-ups.
 | Frontend | [SvelteKit](https://kit.svelte.dev/) |
 | Hosting | Firebase Hosting |
 | Database | Firebase Firestore |
+| Logins | Firebase Auth (teacher + students) |
 | Notifications | Firebase Cloud Function → Telegram |
 | Languages | svelte-i18n (English / Russian / Persian) |
 

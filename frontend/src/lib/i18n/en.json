@@ -1,5 +1,10 @@
 {
 	"nav": {
+		"label": "Main",
+		"home": "Homepage",
+		"about": "About",
+		"teacherDashboard": "Teacher dashboard",
+		"studentDashboard": "Student dashboard",
 		"toDashboard": "Teacher dashboard →",
 		"toHome": "← Back to home"
 	},
@@ -12,6 +17,10 @@
 		"intro": "Personal online lessons — solo or in a small group — shaped around you and your goals. From your very first words to confident conversation, or focused school preparation. Register below and I'll reach out personally to arrange a time that suits you.",
 		"cta": "Register for a course",
 		"qrNote": "Or scan to register from your phone"
+	},
+	"about": {
+		"title": "About",
+		"placeholder": "I'll introduce myself and my website here soon. 💫"
 	},
 	"student": {
 		"subtitle": "Fill in your details and choose a course below."
@@ -56,7 +65,23 @@
 	"dashboard": {
 		"title": "Teacher Dashboard",
 		"signedInAs": "Signed in as {email}",
-		"logout": "Log out"
+		"logout": "Log out",
+		"studentHere": "You're signed in as a student. Your courses are on your student dashboard."
+	},
+	"studentArea": {
+		"title": "Student dashboard",
+		"loginTitle": "Student login",
+		"loginHint": "Use the email and password Samira sent you.",
+		"signedInAs": "Signed in as {email}",
+		"logout": "Log out",
+		"yourCourses": "Your courses",
+		"joinClass": "Join class",
+		"linkSoon": "Class link available soon",
+		"paidOn": "Paid on {date}",
+		"emptyTitle": "No courses here yet",
+		"emptyBody": "Once you register for a course, it will show up here. If you've already registered, Samira will add it shortly.",
+		"loadError": "We couldn't load your courses. Please try again.",
+		"teacherHere": "You're signed in as the teacher. Your courses and registrations are on the teacher dashboard."
 	},
 	"registrations": {
 		"title": "Registrations",
@@ -71,7 +96,25 @@
 		"date": "Date",
 		"actions": "Actions",
 		"delete": "Delete",
-		"confirmDelete": "Delete this student's registration? This cannot be undone."
+		"confirmDelete": "Delete this student's registration? This cannot be undone.",
+		"payment": "Payment",
+		"paid": "Paid",
+		"notPaid": "Not paid",
+		"markPaid": "Mark paid",
+		"markUnpaid": "Mark unpaid"
+	},
+	"studentLogin": {
+		"column": "Student login",
+		"create": "Create login",
+		"reset": "Reset password",
+		"working": "Working…",
+		"created": "Login created 🎉",
+		"resetDone": "Password reset 🔑",
+		"copy": "Copy password",
+		"copied": "Copied ✓",
+		"done": "Done",
+		"onceNotice": "Shown only once. Send it to the student now — you can always issue a new one.",
+		"error": "Could not create the login. Please try again."
 	},
 	"courses": {
 		"title": "Manage courses",

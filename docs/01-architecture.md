@@ -5,7 +5,7 @@
 **Built for:** Samira (the teacher)
 **Document:** 01 — Architecture & Workflow
 **Status:** Approved
-**Last updated:** 2026-07-14
+**Last updated:** 2026-07-15
 
 ---
 
@@ -45,9 +45,23 @@ switcher.
 
 ---
 
-## 3. The Three Core Pieces
+## 3. The Core Pieces
 
-The whole system is built from three connected parts.
+The system is built from the public website, two dashboards, and Firebase
+behind them.
+
+### The header — a permanent four-item shell (Phase 13)
+
+Every page carries the same header: the SamiSphere wordmark, four navigation
+links, and the language switcher.
+
+```
+SamiSphere    Homepage · About · Teacher dashboard · Student dashboard    🇬🇧 🇷🇺 🇮🇷
+```
+
+These four doors are meant to stay **stable for a long time**. Future features
+(homework, AI agents, …) go *inside* one of the dashboards — they do **not**
+become a fifth header item. `/about` is a placeholder until Samira writes it.
 
 ### A. Public Website (what students use)
 
@@ -71,11 +85,41 @@ The whole system is built from three connected parts.
 - View all student registrations.
 - Protected by login — only the teacher can access it.
 
-### C. Backend Services (Firebase, no server to run)
+### C. Student Dashboard (`/my`, password-protected) — Phase 13
+
+The third core piece: where a confirmed student sees what they signed up for.
+
+- **Login is the confirmation.** There is no separate "confirm" step and no
+  self-serve sign-up: Samira clicks **Create login** on a registration, and a
+  Cloud Function creates that student's Firebase Auth account and returns a
+  one-time password. She sends it over Telegram herself.
+- **One login per student (by email); all their courses on one page.** A student
+  registers per course, so one email may have several registrations — each shows
+  as its own card.
+- Each card shows the course + time, a **Paid / Not paid** badge, a large
+  **Join class** button (the course's `meetingLink`), and below it the paid date
+  or the course price.
+- **Payment gates nothing.** The join button always appears when the course has a
+  `meetingLink`, paid or not. Payment is a status Samira tracks, never leverage
+  over a student. A course with no link shows a dashed "available soon"
+  placeholder instead — never a dead button.
+- **Passwords are never stored in Firestore** — only in Firebase Auth (hashed).
+  Samira cannot view an existing password, only reset it.
+
+### D. Backend Services (Firebase, no server to run)
 
 - **Firestore** stores courses/slots and registrations.
-- **Cloud Function** fires automatically on each new registration and sends a
-  Telegram message to the teacher.
+- **Cloud Function** (`notifyOnRegistration`) fires automatically on each new
+  registration and sends a Telegram message to the teacher.
+- **Cloud Function** (`createStudentLogin`, Phase 13) is a **callable** that
+  creates or resets a student's auth account. It needs the Admin SDK, which must
+  never run in a browser, and it verifies the caller is the teacher before doing
+  anything. Both functions run in `me-central1` — the region is pinned in
+  `functions/index.js` and mirrored in `config/firebase.js`, which must agree or
+  the browser calls a URL that does not exist.
+- **Firebase Auth** holds the teacher's account and every student's. Students'
+  accounts are created only by `createStudentLogin`; there is no self-serve
+  sign-up.
 
 ---
 
@@ -115,13 +159,19 @@ collect fuller student details — see doc 03.)
 {
   firstName: "Anna",
   lastName:  "Ivanova",
-  email:     "anna@example.com",
+  email:     "anna@example.com",  // stored LOWERCASE (Phase 13) — this is the
+                                  // key the student dashboard matches against
+                                  // the student's Firebase Auth email
   phone:     "+994 50 123 45 67",
   city:      "Baku",
   country:   "Azerbaijan",
   course:    "Math 101",
   time:      "Monday 10:00",
   comment:   "Prefer evenings, thanks!",  // optional (Phase 12) — ≤ 500 chars
+  paid:      true,            // optional (Phase 13) — per REGISTRATION, not per
+                              // student. ABSENT means NOT PAID (old records).
+  paidAt:    "2026-07-15",    // optional (Phase 13) — the day `paid` became true
+                              // (YYYY-MM-DD). Removed when flipped back to unpaid.
   date:      "2026-06-22"
 }
 ```
@@ -131,6 +181,18 @@ collect fuller student details — see doc 03.)
 > field; the dashboard and notification handle both shapes. The optional
 > `comment` (Phase 12) is a short student note (≤ 500 characters), stored only
 > when provided and shown in the dashboard + Telegram message when present.
+>
+> **Payment (Phase 13):** `paid` / `paidAt` are set only by the teacher, from her
+> dashboard. Payment is **per registration** — Anna can be paid for one course
+> and unpaid for another — and it **gates nothing**: the student's join link does
+> not depend on it. An absent `paid` reads as not paid, so nothing had to be
+> written to existing records.
+>
+> **Email casing (Phase 13):** Firebase Auth normalizes addresses to lowercase,
+> and the student dashboard finds a student's courses by matching this field to
+> their auth email. New registrations are therefore stored lowercased
+> (`services/registrations.js`), and the security rules compare lowercased on
+> both sides so older mixed-case records still resolve to their owner.
 
 ---
 
@@ -174,11 +236,37 @@ The main risk is a stranger spamming fake registrations or reading student data.
 This is handled by **Firestore Security Rules** (no backend server needed):
 
 - **Anyone** may *create* a registration (so students can sign up).
-- **Only the logged-in teacher** may *read*, *edit*, or *delete* registrations.
+- **Only the logged-in teacher** may *edit* or *delete* registrations, and read
+  **all** of them.
+- **A logged-in student** may *read* **only their own** registrations — those
+  whose `email` matches their auth email (Phase 13). They cannot read anyone
+  else's, cannot list the collection, and cannot see another student's payment
+  status. **Students can never write**: a student cannot mark themselves paid.
 - **Only the logged-in teacher** may add, edit, or hide courses and slots.
-- **Anyone** may *read* the list of available courses (to fill the dropdown).
+- **Anyone** may *read* the list of available courses — the student dropdown, the
+  homepage showcase, and the student dashboard's meeting link + price all rely
+  on this. Hidden courses never reach the public.
 
-Detailed rule definitions will be specified in a later step.
+The teacher is identified by her pinned email (`samira@samisphere.com`) in the
+rules **and** in the `createStudentLogin` function — the two must always agree.
+Even if a stranger self-creates an auth account, they get only *student*
+access; her address cannot be re-registered because it is already taken.
+
+**How a student's access works, end to end:** their account is an ordinary
+Firebase Auth account with no special claims. The rules are therefore the only
+thing standing between one student and another's data, which is why the rule is
+per-document (`resource.data.email == request.auth.token.email`): a query that
+could return someone else's row fails as a whole, so only a query constrained to
+their own email succeeds.
+
+Rules are verified in the emulator with `@firebase/rules-unit-testing`
+(`npm --prefix tests test`) — 39 cases covering student reads, student write
+denials, teacher access, and anonymous access.
+
+> **Passwords** live only in Firebase Auth (hashed). No password is ever written
+> to Firestore; `createStudentLogin` returns it once in its response and the
+> dashboard shows it once. Samira cannot view an existing password — only reset
+> it, which issues a new one and invalidates the old.
 
 ---
 
@@ -190,12 +278,29 @@ Detailed rule definitions will be specified in a later step.
                                                           │
                                                           ▼
    Teacher  ◄──────────  Telegram  ◄──────────  Cloud Function
-   (notified)            (message)              (fires automatically)
+   (notified)            (message)              (notifyOnRegistration)
 
-   Teacher  ◄──────────  Dashboard (password-protected)
-   (manages courses,     - add / edit courses + slots
+   Teacher  ◄──────────  Teacher dashboard ( /dashboard, password-protected)
+   (manages courses,     - add / edit / delete courses + slots
     views registrations) - toggle each slot on/off
                          - view registrations
+                         - toggle each registration Paid / Not paid
+                         - "Create login" per registration
+                                     │
+                                     ▼
+                         Cloud Function (createStudentLogin, callable)
+                         - verifies the caller is the teacher
+                         - creates the student's Auth account, or resets it
+                         - returns ONE friendly password (never to Firestore)
+                                     │
+                     password sent by Samira over Telegram, by hand
+                                     │
+                                     ▼
+   Student  ─────────►  Student dashboard ( /my, password-protected)
+   (logs in)            - lists every registration matching their email
+                        - per card: course + time, Paid / Not paid badge,
+                          big "Join class" button (always, when a link exists),
+                          paid date or price
 ```
 
 ---
@@ -205,6 +310,9 @@ Detailed rule definitions will be specified in a later step.
 | Feature | Approach (Version 1) | Deferred to Later |
 |---|---|---|
 | Teacher dashboard | Password-protected page | — |
+| Student dashboard | Password-protected `/my` (Phase 13) | Homework, AI agents (inside it) |
+| Student accounts | Teacher creates them; password sent via Telegram | Self-serve sign-up, self-serve reset |
+| Payment | Teacher-set status per registration; gates nothing | Collection, invoicing, per-month history |
 | Course listings | Stored in Firestore, teacher-managed | — |
 | Full slot handling | Manual hide toggle | Automatic capacity |
 | Notifications | Telegram via Cloud Function | Email (second channel) |

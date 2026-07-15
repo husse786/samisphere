@@ -11,6 +11,13 @@
 //     denied; anonymous create denied; public read limited to available slots.
 //   - registrations: anonymous create with/without comment; comment >500 denied;
 //     non-string comment denied; anonymous read denied; teacher delete allowed.
+//
+// …plus the Phase 13 student-access rules, the security-sensitive part of that
+// phase — a student may read ONLY their own registrations, and may never write:
+//   - student reads own registration ✅ / someone else's ❌
+//   - student lists all registrations ❌ / lists own (constrained query) ✅
+//   - student writes `paid` on their own row ❌ (and on someone else's ❌)
+//   - teacher keeps full access ✅; anonymous create ✅; anonymous read ❌
 import {
 	initializeTestEnvironment,
 	assertSucceeds,
@@ -20,6 +27,7 @@ import {
 	doc,
 	getDoc,
 	setDoc,
+	updateDoc,
 	deleteDoc,
 	collection,
 	getDocs,
@@ -29,6 +37,8 @@ import {
 import { readFileSync } from 'node:fs';
 
 const TEACHER_EMAIL = 'samira@samisphere.com';
+const STUDENT_EMAIL = 'anna@example.com';
+const OTHER_STUDENT_EMAIL = 'bob@example.com';
 
 const testEnv = await initializeTestEnvironment({
 	projectId: 'demo-samisphere',
@@ -37,9 +47,17 @@ const testEnv = await initializeTestEnvironment({
 	}
 });
 
-// Contexts: the logged-in teacher, and an anonymous (logged-out) visitor.
+// Contexts: the logged-in teacher, two logged-in students, and an anonymous
+// (logged-out) visitor. The students are ordinary auth accounts — exactly what
+// `createStudentLogin` makes — with no special claims of any kind.
 const teacherDb = testEnv
 	.authenticatedContext('teacher-uid', { email: TEACHER_EMAIL })
+	.firestore();
+const studentDb = testEnv
+	.authenticatedContext('student-uid', { email: STUDENT_EMAIL })
+	.firestore();
+const otherStudentDb = testEnv
+	.authenticatedContext('other-uid', { email: OTHER_STUDENT_EMAIL })
 	.firestore();
 const anonDb = testEnv.unauthenticatedContext().firestore();
 
@@ -76,9 +94,40 @@ await testEnv.withSecurityRulesDisabled(async (ctx) => {
 	await setDoc(doc(db, 'registrations/reg-1'), {
 		firstName: 'Anna',
 		lastName: 'Ivanova',
-		email: 'anna@example.com',
+		email: STUDENT_EMAIL,
 		course: 'Russian A1',
 		time: 'Monday 10:00'
+	});
+	// Anna's second course — payment is per registration, so she can be paid for
+	// one and unpaid for another. Both must be readable by her.
+	await setDoc(doc(db, 'registrations/reg-anna-2'), {
+		firstName: 'Anna',
+		lastName: 'Ivanova',
+		email: STUDENT_EMAIL,
+		course: 'Russian A2',
+		time: 'Thursday 15:00',
+		paid: true,
+		paidAt: '2026-07-15'
+	});
+	// Someone else's registration — Anna must never see this one.
+	await setDoc(doc(db, 'registrations/reg-bob'), {
+		firstName: 'Bob',
+		lastName: 'Jones',
+		email: OTHER_STUDENT_EMAIL,
+		course: 'Russian A1',
+		time: 'Monday 10:00',
+		paid: true,
+		paidAt: '2026-07-10'
+	});
+	// A legacy row whose email was stored with capitals (the form used to only
+	// trim). Firebase Auth reports lowercase, so the rules compare lowercased —
+	// this student should still reach their own row.
+	await setDoc(doc(db, 'registrations/reg-mixedcase'), {
+		firstName: 'Anna',
+		lastName: 'Ivanova',
+		email: 'Anna@Example.COM',
+		course: 'Russian A1',
+		time: 'Friday 09:00'
 	});
 });
 
@@ -227,6 +276,82 @@ await test('anonymous creates a registration missing required fields → denied'
 			comment: 'hi'
 		})
 	));
+
+// ─── Phase 13: student access ────────────────────────────────────────────────
+// The heart of the phase. A student is just an ordinary auth account, so these
+// rules are all that stand between one student and another's data.
+console.log('Registrations — student reads (Phase 13):');
+
+await test('student reads their OWN registration → allowed', () =>
+	assertSucceeds(getDoc(doc(studentDb, 'registrations/reg-1'))));
+
+await test('student reads their own SECOND registration → allowed', () =>
+	assertSucceeds(getDoc(doc(studentDb, 'registrations/reg-anna-2'))));
+
+await test("student reads SOMEONE ELSE'S registration → denied", () =>
+	assertFails(getDoc(doc(studentDb, 'registrations/reg-bob'))));
+
+await test("student cannot read another's paid status via their doc → denied", () =>
+	assertFails(getDoc(doc(otherStudentDb, 'registrations/reg-anna-2'))));
+
+await test('student reads a legacy MIXED-CASE email row that is theirs → allowed', () =>
+	assertSucceeds(getDoc(doc(studentDb, 'registrations/reg-mixedcase'))));
+
+await test('student LISTS ALL registrations (unconstrained) → denied', () =>
+	assertFails(getDocs(collection(studentDb, 'registrations'))));
+
+await test("student queries by SOMEONE ELSE'S email → denied", () =>
+	assertFails(
+		getDocs(
+			query(collection(studentDb, 'registrations'), where('email', '==', OTHER_STUDENT_EMAIL))
+		)
+	));
+
+await test('student queries constrained to their OWN email → allowed', () =>
+	assertSucceeds(
+		getDocs(query(collection(studentDb, 'registrations'), where('email', '==', STUDENT_EMAIL)))
+	));
+
+console.log('Registrations — student writes are all denied (Phase 13):');
+
+await test('student marks THEMSELVES paid → denied', () =>
+	assertFails(updateDoc(doc(studentDb, 'registrations/reg-1'), { paid: true })));
+
+await test('student marks their own paid registration UNPAID → denied', () =>
+	assertFails(updateDoc(doc(studentDb, 'registrations/reg-anna-2'), { paid: false })));
+
+await test("student marks SOMEONE ELSE'S registration paid → denied", () =>
+	assertFails(updateDoc(doc(studentDb, 'registrations/reg-bob'), { paid: true })));
+
+await test('student edits their own registration → denied', () =>
+	assertFails(updateDoc(doc(studentDb, 'registrations/reg-1'), { course: 'Free lessons' })));
+
+await test('student deletes their own registration → denied', () =>
+	assertFails(deleteDoc(doc(studentDb, 'registrations/reg-1'))));
+
+console.log('Courses — the student dashboard needs the link + price (Phase 13):');
+
+await test('student reads an AVAILABLE course (meeting link + price) → allowed', () =>
+	assertSucceeds(getDoc(doc(studentDb, 'courses/available-1'))));
+
+await test('student reads a HIDDEN course → denied', () =>
+	assertFails(getDoc(doc(studentDb, 'courses/hidden-1'))));
+
+await test('student edits a course → denied', () =>
+	assertFails(updateDoc(doc(studentDb, 'courses/available-1'), { price: 0 })));
+
+console.log('Registrations — teacher keeps full access (Phase 13):');
+
+await test('teacher marks a registration paid → allowed', () =>
+	assertSucceeds(
+		updateDoc(doc(teacherDb, 'registrations/reg-1'), { paid: true, paidAt: '2026-07-15' })
+	));
+
+await test("teacher reads any student's registration → allowed", () =>
+	assertSucceeds(getDoc(doc(teacherDb, 'registrations/reg-bob'))));
+
+await test('teacher LISTS all registrations → allowed', () =>
+	assertSucceeds(getDocs(collection(teacherDb, 'registrations'))));
 
 console.log('Registrations — read/delete:');
 

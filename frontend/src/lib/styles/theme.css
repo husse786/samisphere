@@ -25,6 +25,18 @@
 	--color-brand-blue: #3b82f6; /* "Sami" on dark */
 	--color-brand-cyan: #38bdf8; /* "Sphere" on dark */
 
+	/* Payment status (Phase 13) — green = paid, amber = not paid. Defined once so
+	   the teacher's list (light surfaces) and the student dashboard (dark cards)
+	   read as the same badge. Payment is a status only: it never gates access. */
+	--color-paid-bg: #d1fae5;
+	--color-paid-text: #047857;
+	--color-unpaid-bg: #fef3c7;
+	--color-unpaid-text: #b45309;
+	--color-paid-bg-dark: rgba(16, 185, 129, 0.16);
+	--color-paid-text-dark: #6ee7b7;
+	--color-unpaid-bg-dark: rgba(245, 158, 11, 0.16);
+	--color-unpaid-text-dark: #fcd34d;
+
 	/* Typography */
 	--font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
 		sans-serif;

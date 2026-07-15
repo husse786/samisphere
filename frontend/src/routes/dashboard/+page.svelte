@@ -2,14 +2,17 @@
      Phase 5: login gate + registration list. Phase 6 adds course management.
      Content is shown only when the teacher is logged in; logged-out visitors
      see only the login form. (Real data protection comes from the Firestore
-     security rules in Phase 10 — this gating is the UX layer.) -->
+     security rules in Phase 10 — this gating is the UX layer.)
+     Phase 13: a STUDENT who signs in here is sent to /my with a friendly note
+     rather than a raw error — their login is fine, it is just the wrong door. -->
 <script>
 	import { onMount } from 'svelte';
 	import { _ } from 'svelte-i18n';
-	import { onAuthChange, signOutTeacher } from '$lib/services/auth.js';
+	import { onAuthChange, signOutUser, isTeacher } from '$lib/services/auth.js';
 	import LoginForm from '$lib/components/teacher/LoginForm.svelte';
 	import RegistrationList from '$lib/components/teacher/RegistrationList.svelte';
 	import CourseManager from '$lib/components/teacher/CourseManager.svelte';
+	import WrongDoor from '$lib/components/common/WrongDoor.svelte';
 	import Button from '$lib/components/common/Button.svelte';
 
 	// undefined = still checking auth; null = logged out; User = logged in.
@@ -28,10 +31,20 @@
 		<p>{$_('common.loading')}</p>
 	{:else if user === null}
 		<LoginForm />
+	{:else if !isTeacher(user)}
+		<!-- A student signed in at the teacher's door. Point them home. -->
+		<WrongDoor
+			message={$_('dashboard.studentHere')}
+			linkHref="/my"
+			linkLabel={$_('nav.studentDashboard')}
+			email={user.email}
+			tone="light"
+			onLogout={signOutUser}
+		/>
 	{:else}
 		<div class="signed-in">
 			<span>{$_('dashboard.signedInAs', { values: { email: user.email } })}</span>
-			<Button variant="secondary" onclick={signOutTeacher}>{$_('dashboard.logout')}</Button>
+			<Button variant="secondary" onclick={signOutUser}>{$_('dashboard.logout')}</Button>
 		</div>
 		<CourseManager />
 		<RegistrationList />

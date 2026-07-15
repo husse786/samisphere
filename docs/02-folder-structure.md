@@ -5,7 +5,7 @@
 **Built for:** Samira (the teacher)
 **Document:** 02 — Folder Structure Planning
 **Status:** Approved
-**Last updated:** 2026-06-22
+**Last updated:** 2026-07-15
 
 ---
 
@@ -47,22 +47,30 @@ samisphere/                           ← THE WHOLE WORKSPACE (one GitHub repo)
 │   │   │   │
 │   │   │   ├── components/           ← UI building blocks (grouped by area)
 │   │   │   │   ├── common/           ← shared everywhere
-│   │   │   │   │   ├── Header.svelte           ← SamiSphere wordmark + lang switcher
+│   │   │   │   │   ├── Header.svelte           ← wordmark + 4-item nav + switcher
 │   │   │   │   │   ├── LanguageSwitcher.svelte
+│   │   │   │   │   ├── WrongDoor.svelte        ← "you're on the other dashboard"
 │   │   │   │   │   └── Button.svelte
-│   │   │   │   ├── student/          ← the registration form pieces
+│   │   │   │   ├── student/          ← everything the STUDENT sees
 │   │   │   │   │   ├── CourseDropdown.svelte
-│   │   │   │   │   └── RegistrationForm.svelte
+│   │   │   │   │   ├── RegistrationForm.svelte
+│   │   │   │   │   ├── StudentLoginForm.svelte    ← the /my login card
+│   │   │   │   │   ├── StudentProfile.svelte      ← /my: identity + card list
+│   │   │   │   │   └── StudentCourseCard.svelte   ← one registration's card
 │   │   │   │   └── teacher/          ← the dashboard pieces
 │   │   │   │       ├── CourseManager.svelte
-│   │   │   │       └── RegistrationList.svelte
+│   │   │   │       ├── LoginForm.svelte
+│   │   │   │       ├── RegistrationList.svelte
+│   │   │   │       └── StudentLoginButton.svelte  ← create/reset + password reveal
 │   │   │   │
 │   │   │   ├── config/               ← ★ ONE place for settings
-│   │   │   │   └── firebase.js       ← Firebase connection (the only copy)
+│   │   │   │   └── firebase.js       ← Firebase connection (the only copy):
+│   │   │   │                            db, auth, functions
 │   │   │   │
 │   │   │   ├── services/             ← ★ ALL talking-to-Firebase logic
-│   │   │   │   ├── courses.js        ← read/add/hide courses
-│   │   │   │   └── registrations.js  ← create/read registrations
+│   │   │   │   ├── auth.js           ← sign in/out, isTeacher, createStudentLogin
+│   │   │   │   ├── courses.js        ← read/add/hide/delete courses
+│   │   │   │   └── registrations.js  ← create/read/delete + paid toggle
 │   │   │   │
 │   │   │   ├── stores/               ← app-wide state (e.g. current language)
 │   │   │   │   └── language.js
@@ -75,10 +83,17 @@ samisphere/                           ← THE WHOLE WORKSPACE (one GitHub repo)
 │   │   │   └── styles/               ← ★ COLORS & design tokens, one place
 │   │   │       └── theme.css         ← all colors, fonts, spacing
 │   │   │
-│   │   ├── routes/                   ← the actual pages
-│   │   │   ├── +page.svelte          ← the public student page  ( / )
-│   │   │   └── dashboard/
-│   │   │       └── +page.svelte      ← teacher dashboard ( /dashboard )
+│   │   ├── routes/                   ← the actual pages (the header's 4 doors,
+│   │   │   │                            plus /register)
+│   │   │   ├── +page.svelte          ← landing page ( / )
+│   │   │   ├── about/
+│   │   │   │   └── +page.svelte      ← About placeholder ( /about )
+│   │   │   ├── register/
+│   │   │   │   └── +page.svelte      ← registration form ( /register )
+│   │   │   ├── dashboard/
+│   │   │   │   └── +page.svelte      ← teacher dashboard ( /dashboard )
+│   │   │   └── my/
+│   │   │       └── +page.svelte      ← student dashboard ( /my )
 │   │   │
 │   │   └── app.html                  ← the HTML shell
 │   │
@@ -166,12 +181,19 @@ cared *where* the data went. That separation is what makes the swap painless.
 
 UI building blocks are grouped by **who uses them**:
 
-- `components/common/` — shared everywhere (language switcher, buttons).
-- `components/student/` — the registration form and course dropdown.
-- `components/teacher/` — the dashboard's course manager and registration list.
+- `components/common/` — shared everywhere (header, language switcher, buttons,
+  the wrong-door notice both dashboards use).
+- `components/student/` — everything the student sees: the registration form and
+  course dropdown, plus their login and dashboard (Phase 13).
+- `components/teacher/` — the dashboard's course manager, registration list, and
+  the create/reset-login control (Phase 13).
 
 **Example:** Anyone opening the project instantly sees what belongs to the
 student side, the teacher side, or both.
+
+> Note (Phase 13): `student/` means *"the student's side of the product"*, not
+> "the public pages". The student dashboard's pieces live here next to the
+> registration form, because the same person uses both.
 
 ### The SamiSphere brand — `Header.svelte` + `theme.css`
 
@@ -208,7 +230,9 @@ and where future work belongs. (Decision: keep them from day one.)
 | `frontend/src/lib/i18n/` | English / Russian / Persian text | ★ Three files | ✅ Yes |
 | `frontend/src/lib/styles/` | Colors, fonts, spacing | ★ One file | ✅ Yes |
 | `frontend/src/lib/components/` | UI pieces, grouped by area | Grouped | ✅ Yes |
-| `frontend/src/routes/` | Pages (`/` and `/dashboard`) | — | ✅ Yes |
+| `frontend/src/routes/` | Pages (`/`, `/about`, `/register`, `/dashboard`, `/my`) | — | ✅ Yes |
+| `functions/` | Cloud Functions (Telegram trigger, `createStudentLogin`) | ★ One folder | ✅ Yes |
+| `tests/` | Firestore security-rules tests (emulator) | ★ One folder | ✅ Yes |
 | `backend/` | Future Java/Node backend | — | ❌ Empty (reserved) |
 | `shared/` | Future shared data shapes/constants | — | ❌ Empty (reserved) |
 | `docs/` | Planning documents | — | ✅ Yes |

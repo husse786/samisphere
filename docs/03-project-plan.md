@@ -924,6 +924,183 @@ Full spec: `phase-12-v1.1.md` (approved 2026-07-14).
 
 ---
 
+## Phase 13 — v1.2 (student logins, student dashboard, header nav, About page)
+
+**Goal:** Give students a door of their own. A confirmed student logs in and sees
+the courses they registered for, whether they've paid, the class time, and a
+button to join the class — plus the permanent header shell and an About
+placeholder. Full spec: `phase-13-v1.2.md` (approved 2026-07-15).
+
+**Design decisions made with the human (do not re-litigate):** login *is* the
+confirmation; one login per student by email, all their courses on one page;
+payment is per registration and **gates nothing**; passwords never touch
+Firestore; the header is a permanent 4-item shell (future features go *inside* a
+dashboard); About is a placeholder for now.
+
+### Task 13.1 — Header navigation (the permanent shell)
+- **Done when:** the header shows the wordmark, then **Homepage · About ·
+  Teacher dashboard · Student dashboard**, plus the language switcher; the active
+  page is indicated; all labels from i18n; themed with `theme.css`; responsive on
+  a phone with the switcher still visible; correct in EN/RU/FA incl. RTL.
+
+### Task 13.2 — About page (placeholder)
+- **Done when:** `/about` exists, styled like the other public pages, showing a
+  short warm placeholder keyed in all three languages. Nothing invented.
+
+### Task 13.3 — Add payment fields to the registration shape
+- **Done when:** `services/registrations.js` documents + exposes `paid` /
+  `paidAt`; a toggle stamps `paidAt` when flipping to paid and clears it when
+  flipping back; absent `paid` reads as unpaid; old records unaffected.
+
+### Task 13.4 — Teacher: payment toggle in the dashboard
+- **Done when:** each row shows a green **Paid** / amber **Not paid** badge and
+  the paid date, with a one-click toggle; text from i18n; theme tokens + shared
+  `Button`.
+
+### Task 13.5 — Cloud Function: create / reset a student login
+- **Done when:** a **callable** (`createStudentLogin`) verifies the caller is the
+  teacher, creates the student's auth account or resets its password, and returns
+  a friendly hand-typable password **once**; no password ever written to
+  Firestore; clean errors; verified in the emulator.
+
+### Task 13.6 — Teacher: "Create login" / "Reset password" button
+- **Done when:** each registration row has the control; clicking shows the
+  returned password once, copyable, with a "won't be shown again" note; Samira
+  sends it via Telegram herself.
+
+### Task 13.7 — Student dashboard route + login (`/my`)
+- **Done when:** `/my` shows a login when logged out and the profile when logged
+  in; wrong-door cases (teacher at `/my`, student at `/dashboard`) get a kind
+  message, never a raw error; friendly login errors; logout works.
+
+### Task 13.8 — Student profile page (the design)
+- **Done when:** the page lists every registration matching the student's email
+  as one card each — course + time, paid badge, big full-width **Join class**
+  button (or a dashed placeholder when there is no link), and the paid date or
+  price below; friendly empty state; held to the landing page's bar; responsive;
+  EN/RU/FA + RTL.
+
+### Task 13.9 — Translations (en / ru / fa)
+- **Done when:** every new string is keyed in all three files; English complete;
+  RU/FA flagged for Samira's review; no hard-coded English in touched components.
+
+### Task 13.10 — Security rules + deploy
+- **Done when:** a student may read only their own registrations, cannot list
+  others, and can never write (not even their own `paid`); teacher access,
+  anonymous create, and public course reads unchanged; emulator tests extended
+  and passing. **Production deploy is a human-confirmed step.**
+
+### Task 13.11 — Update the documentation (required)
+- **Done when:** `01`, `02`, this plan, `README.md`, and the service shape
+  comments all match reality.
+
+### ✅ Phase 13 Checklist
+
+**Header + About**
+- [x] Header shows Homepage · About · Teacher dashboard · Student dashboard + language switcher
+- [x] Active page indicated; responsive on phone; switcher still visible
+- [x] Correct in EN/RU/FA incl. RTL (nav mirrors)
+- [x] `/about` placeholder route exists, styled, keyed in all three languages
+
+**Payment**
+- [x] `paid` + `paidAt` documented in `services/registrations.js` shape + JSDoc
+- [x] Toggle sets `paid` and stamps `paidAt`; old records (no field) read as unpaid
+- [x] Teacher dashboard shows Paid/Not paid + date, one-click toggle, updates immediately
+
+**Student login (teacher side)**
+- [x] Callable function creates an auth account, or resets the password if the email exists
+- [x] Function verifies the caller is the teacher; rejects everyone else
+- [x] Password is friendly/hand-typable, no ambiguous chars, returned once
+- [x] **No password is ever written to Firestore** (verified deliberately — see note)
+- [x] Dashboard button reads Create login / Reset password appropriately
+- [x] Password shown once, copyable, with a clear "won't be shown again" note
+
+**Student dashboard**
+- [x] `/my` shows a login screen when logged out; student data never visible logged out
+- [x] Wrong-door cases (teacher at `/my`, student at `/dashboard`) show a kind message, not a raw error
+- [x] Profile lists **all** registrations matching the student's email, one card each
+- [x] Card: course + time, Paid/Not paid badge, big full-width Join class button
+- [x] No `meetingLink` → dashed "Class link available soon" placeholder, never a dead button
+- [x] Below button: paid date when paid; price when not paid
+- [x] **Join button always shows when a link exists, regardless of payment**
+- [x] Empty state when the student has no registrations
+- [x] Looks good, matches the landing page bar, responsive, EN/RU/FA + RTL
+
+**Rules, i18n, docs**
+- [x] Students read only their own registrations; cannot list others; cannot write `paid`
+- [x] Teacher access, anonymous create, and public course reads all unchanged and working
+- [x] Emulator rules tests extended and passing (39/39)
+- [x] All new strings keyed in en/ru/fa; RU/FA review flagged, not closed
+- [x] Production deploys paused for human confirmation — not deployed unilaterally
+- [x] `01`, `02`, `03`, `README`, and service shape comments updated
+- [x] `npm --prefix frontend run check` clean; committed and pushed
+- [ ] Tagged `v1.2.0` when live *(after the human's deploy)*
+
+> **Phase 13 built 2026-07-15 — awaiting the human's production deploy.**
+> The header became a permanent four-item shell (`Header.svelte`, active-state
+> underline, nav wrapping to its own scrollable row under 720px so the wordmark
+> and switcher keep the first row); `/about` is a dark placeholder matching the
+> landing/register pages. `paid` / `paidAt` joined the registration shape with a
+> one-click toggle in `RegistrationList`; absent `paid` reads as unpaid, so no
+> existing record needed touching, and flipping back to unpaid deletes `paidAt`
+> rather than leaving a stale date.
+>
+> **Student logins:** a new callable `createStudentLogin` (`functions/index.js`,
+> `me-central1`, alongside the Telegram trigger) verifies the caller's own auth
+> token against the pinned teacher email, then creates the student's account or
+> resets its password, returning one friendly password (`k4m9x-2p7b3` — 11 chars,
+> 2×5 groups, 32-symbol alphabet with no `0/1/l/o`, ~50 bits). `firebase-admin`
+> was added to `functions/`. **No password is written to Firestore** — verified
+> deliberately: `createStudentLogin` imports only `getAuth` and never touches
+> Firestore, and no service or rule mentions a password field.
+>
+> **Student dashboard:** `/my` (login → profile), with `WrongDoor.svelte` shared
+> by both dashboards for the teacher-at-`/my` and student-at-`/dashboard` cases.
+> The profile lists every registration matching the student's auth email, one
+> card each; the join button and its dashed no-link placeholder share a
+> `--join-height` so cards keep identical shape either way.
+>
+> **Rules:** students read own-only via a per-document email match (so an
+> unconstrained list fails as a whole); all student writes denied. **39/39**
+> emulator tests pass (was 20), and the callable was verified separately in the
+> functions+auth emulator (19/19: non-teacher and unauthenticated callers
+> rejected, create→reset, old password stops working, invalid emails rejected).
+> The auth emulator was added to `firebase.json` to make that possible.
+>
+> **One bug found and fixed while building:** the registration form only trimmed
+> the email, but Firebase Auth normalizes to lowercase — a student who typed
+> `Anna@Example.com` would have logged in fine and then seen an **empty**
+> dashboard, since the email match would never hit. `createRegistration` now
+> stores the email lowercased, and the rules compare lowercased on both sides so
+> older mixed-case rows still resolve. See the caveat below.
+>
+> `npm --prefix frontend run check` is clean (0 errors). Verified locally in the
+> browser: header nav + active state (EN and FA/RTL, desktop and 390px phone, no
+> horizontal overflow), `/about`, the `/my` login screen, its friendly
+> "Incorrect email or password" (no raw Firebase error), and all four card states
+> — paid+link, **unpaid+link (join button still shown — payment gates nothing)**,
+> unpaid+no-link, and a long course name — in English and Persian/RTL.
+>
+> ⏳ **Remaining (human steps):**
+> **(a) Production deploy — paused for you, nothing was deployed.** In order:
+> `firebase deploy --only firestore:rules`, then `firebase deploy --only
+> functions` (adds `createStudentLogin`; `notifyOnRegistration` is unchanged),
+> then `npm --prefix frontend run build && firebase deploy --only hosting`.
+> Then tag `v1.2.0`.
+> **(b)** The end-to-end student flow (create a login → student signs in → sees
+> their cards) can only be exercised once the function is live — it needs a real
+> auth account. Worth doing as the first post-deploy check.
+> **(c)** Samira to review the new **RU/FA** strings — the standing review note
+> from Phase 7 / 10.5 / 12, now extended, still open.
+> **(d) Legacy mixed-case emails:** any registration created before today whose
+> stored email has capitals will not match its student. The rules allow the read,
+> but Firestore cannot query case-insensitively, so the row stays invisible to
+> them. If a student reports an empty dashboard, re-save that registration's
+> email in lowercase. New registrations are unaffected.
+> **(e)** Live-data cleanup of old test registrations (from v1.1) still pending.
+
+---
+
 ## 3. What is deliberately NOT in version 1
 
 (Carried over from docs 01–02 — written down so they're remembered, not built now.)

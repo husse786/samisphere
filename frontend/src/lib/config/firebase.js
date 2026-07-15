@@ -4,6 +4,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { getFunctions } from 'firebase/functions';
 import {
 	PUBLIC_FIREBASE_API_KEY,
 	PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -22,8 +23,15 @@ const firebaseConfig = {
 	appId: PUBLIC_FIREBASE_APP_ID
 };
 
-// One app instance, shared across the whole site: Firestore for data,
-// Auth for the teacher login.
+// The region our Cloud Functions are deployed to. It must match the `region`
+// set on the callable in `functions/index.js` — a mismatch means the browser
+// calls a URL that doesn't exist.
+const FUNCTIONS_REGION = 'me-central1';
+
+// One app instance, shared across the whole site: Firestore for data, Auth for
+// the teacher + student logins, Functions for the callable that creates a
+// student's account (Phase 13).
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const functions = getFunctions(app, FUNCTIONS_REGION);

@@ -2,9 +2,13 @@ rules_version = '2';
 
 // SamiSphere Firestore security rules (doc 01 §7).
 //   - Anyone may CREATE a registration (students sign up).
-//   - Only the logged-in teacher may READ / EDIT / DELETE registrations.
+//   - Only the logged-in teacher may EDIT / DELETE registrations, and read ALL
+//     of them.
+//   - A logged-in STUDENT may READ ONLY their own registrations — the ones whose
+//     `email` is their own (Phase 13). They can never write one.
 //   - Only the logged-in teacher may ADD / EDIT / HIDE courses.
-//   - Anyone may READ AVAILABLE courses (to fill the student dropdown).
+//   - Anyone may READ AVAILABLE courses (the student dropdown, the homepage
+//     showcase, and the student dashboard's meeting link + price all need this).
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -14,6 +18,23 @@ service cloud.firestore {
     function isTeacher() {
       return request.auth != null
         && request.auth.token.email == 'samira@samisphere.com';
+    }
+
+    // A signed-in student reading a registration that is theirs (Phase 13).
+    // `resource.data` is the document being read, so this is decided per
+    // document: a get() of someone else's is denied, and a list() that could
+    // return someone else's fails as a whole — which is exactly what we want.
+    // Only a query constrained to the student's own email can succeed.
+    //
+    // Compared lowercased on both sides: Firebase Auth normalizes addresses to
+    // lowercase, and a registration typed as "Anna@Example.com" should still
+    // belong to anna@example.com. New registrations are stored lowercased
+    // (services/registrations.js); this keeps older ones working too.
+    function isOwnRegistration() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && resource.data.email is string
+        && resource.data.email.lower() == request.auth.token.email.lower();
     }
 
     // Courses / time slots.
@@ -54,8 +75,12 @@ service cloud.firestore {
         && (!('comment' in request.resource.data)
           || (request.resource.data.comment is string
             && request.resource.data.comment.size() <= 500));
-      // Only the teacher may read / edit / delete.
-      allow read, update, delete: if isTeacher();
+      // The teacher reads everything; a student reads only their own rows.
+      allow read: if isTeacher() || isOwnRegistration();
+      // Writing stays teacher-only. A student must never be able to mark
+      // themselves paid — payment is Samira's to record, and this is the rule
+      // that makes that true rather than just a missing button.
+      allow update, delete: if isTeacher();
     }
 
     // Anything not matched above is denied by default.
