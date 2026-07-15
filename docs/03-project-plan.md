@@ -1034,9 +1034,9 @@ dashboard); About is a placeholder for now.
 - [x] Production deploys paused for human confirmation — not deployed unilaterally
 - [x] `01`, `02`, `03`, `README`, and service shape comments updated
 - [x] `npm --prefix frontend run check` clean; committed and pushed
-- [ ] Tagged `v1.2.0` when live *(after the human's deploy)*
+- [x] Tagged `v1.2.0` when live
 
-> **Phase 13 built 2026-07-15 — awaiting the human's production deploy.**
+> **Phase 13 complete 2026-07-15 — built, verified, and deployed.**
 > The header became a permanent four-item shell (`Header.svelte`, active-state
 > underline, nav wrapping to its own scrollable row under 720px so the wordmark
 > and switcher keep the first row); `/about` is a dark placeholder matching the
@@ -1081,23 +1081,45 @@ dashboard); About is a placeholder for now.
 > — paid+link, **unpaid+link (join button still shown — payment gates nothing)**,
 > unpaid+no-link, and a long course name — in English and Persian/RTL.
 >
+> **Deployed 2026-07-15 (human-confirmed), in this order:** `firebase deploy
+> --only firestore:rules` → `firebase deploy --only functions`
+> (**`createStudentLogin` created** in `me-central1`; `notifyOnRegistration`
+> updated, unchanged in behaviour) → `npm --prefix frontend run build &&
+> firebase deploy --only hosting` (→ https://samisphere-82309.web.app).
+> Committed + pushed to `main` and tagged **`v1.2.0`**.
+>
+> **Verified against production after deploy** (not assumed):
+> - `createStudentLogin` is reachable and answers an unauthenticated caller with
+>   our own `UNAUTHENTICATED` / "You must be signed in." — proving both the IAM
+>   invoker and the teacher guard are live, and that the browser will not hit a
+>   CORS/403 wall.
+> - Anonymous read of **all registrations** → `PERMISSION_DENIED` ✅
+> - Anonymous **query of registrations by email** → `PERMISSION_DENIED` ✅
+>   (logged-out visitors cannot reach student data even when constrained)
+> - Anonymous **`courses where status == "available"`** → 200, 6 courses ✅
+>   (an unconstrained list of *all* courses is denied, as intended — hidden slots
+>   never reach the public)
+> - `/`, `/my`, `/about` all serve 200.
+>
 > ⏳ **Remaining (human steps):**
-> **(a) Production deploy — paused for you, nothing was deployed.** In order:
-> `firebase deploy --only firestore:rules`, then `firebase deploy --only
-> functions` (adds `createStudentLogin`; `notifyOnRegistration` is unchanged),
-> then `npm --prefix frontend run build && firebase deploy --only hosting`.
-> Then tag `v1.2.0`.
-> **(b)** The end-to-end student flow (create a login → student signs in → sees
-> their cards) can only be exercised once the function is live — it needs a real
-> auth account. Worth doing as the first post-deploy check.
-> **(c)** Samira to review the new **RU/FA** strings — the standing review note
+> **(a) The end-to-end student flow is the one thing still unproven live**
+> (create a login → student signs in at `/my` → sees their cards). It needs a
+> real student account and Samira's dashboard login, so it is yours to run — the
+> natural first check. Everything it depends on is verified above.
+> **(b)** Samira to review the new **RU/FA** strings — the standing review note
 > from Phase 7 / 10.5 / 12, now extended, still open.
-> **(d) Legacy mixed-case emails:** any registration created before today whose
+> **(c) Legacy mixed-case emails:** any registration created before today whose
 > stored email has capitals will not match its student. The rules allow the read,
 > but Firestore cannot query case-insensitively, so the row stays invisible to
 > them. If a student reports an empty dashboard, re-save that registration's
 > email in lowercase. New registrations are unaffected.
-> **(e)** Live-data cleanup of old test registrations (from v1.1) still pending.
+> **(d)** Live-data cleanup of old test registrations (from v1.1) still pending.
+>
+> **Noted from the live data:** at least one available course has an empty
+> `meetingLink` (`""`). That is handled — an empty string is falsy, so the card
+> shows the dashed "Class link available soon" placeholder rather than a dead
+> button. Students on that course will see the link appear as soon as Samira adds
+> one.
 
 ---
 
